@@ -6,8 +6,9 @@
  * Time: 10:06
  */
 
-namespace Framework;
+namespace Tests\Framework;
 
+use Framework\App;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
