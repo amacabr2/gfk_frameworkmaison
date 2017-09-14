@@ -54,6 +54,11 @@ class Router {
         return $this->router;
     }
 
+    /**
+     * @param string $name
+     * @param array $parameters
+     * @return null|string
+     */
     public function generateUri(string $name, array $parameters): ?string {
         return $this->router->generateUri($name, $parameters);
     }
