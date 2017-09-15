@@ -35,6 +35,7 @@ class Renderer {
     public function render(string $view, array $params = []): string {
         $path = $this->hasNamespace($view) ? $this->replaceNamespace($view) . '.php' : $this->paths[self::DEFAULT_NAMESPACE] . DIRECTORY_SEPARATOR . $view . '.php';
         ob_start();
+        $renderer = $this;
         extract($params);
         require($path);
         return ob_get_clean();

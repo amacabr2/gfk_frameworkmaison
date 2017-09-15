@@ -22,10 +22,11 @@ class BlogModule {
     /**
      * BlogModule constructor.
      * @param Router $router
+     * @param Renderer $renderer
      */
-    public function __construct(Router $router) {
-        $this->renderer = new Renderer();
-        $this->renderer->addPath('blog', '/views');
+    public function __construct(Router $router, Renderer $renderer) {
+        $this->renderer = $renderer;
+        $this->renderer->addPath('blog', __DIR__ . '/views');
         $router->get('/blog', [$this, 'index'], 'blog.index');
         $router->get('/blog/{slug:[a-z0-9\-]+}', [$this, 'show'], 'blog.show');
     }

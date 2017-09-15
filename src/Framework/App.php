@@ -28,11 +28,12 @@ class App {
     /**
      * App constructor.
      * @param array $modules
+     * @param array $dependencies
      */
-    public function __construct(array $modules = []) {
+    public function __construct(array $modules = [], array $dependencies = []) {
         $this->router = new Router();
         foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
+            $this->modules[] = new $module($this->router, $dependencies['renderer']);
         }
     }
 
