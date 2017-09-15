@@ -36,4 +36,10 @@ class RendererTest extends TestCase {
         $this->assertEquals('Salut', $content);
     }
 
+    public function testRenderWithParams() {
+        $this->renderer->addPath(__DIR__ .'/views');
+        $content = $this->renderer->render('demoParams', ['nom' => 'Marc']);
+        $this->assertEquals('Salut Marc', $content);
+    }
+
 }
