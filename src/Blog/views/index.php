@@ -4,7 +4,7 @@
         <h1>Bienvenue sur le blog</h1>
 
         <ul>
-            <li>Article 1</li>
+            <li><a href="<?= $router->generateUri('blog.show', ['slug' => 'azazaz']); ?>">Article 1</a></li>
             <li>Article 2</li>
             <li>Article 3</li>
         </ul>

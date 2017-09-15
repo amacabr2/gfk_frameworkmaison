@@ -13,9 +13,18 @@ class Renderer {
 
     const DEFAULT_NAMESPACE = '__MAIN';
 
+    /**
+     * @var array
+     */
     private $paths = [];
 
     /**
+     * @var array
+     */
+    private $globals = [];
+
+    /**
+     * Add path for load views
      * @param string $namespace
      * @param null|string $path
      */
@@ -28,6 +37,7 @@ class Renderer {
     }
 
     /**
+     * Allows to render a view
      * @param string $view
      * @param array $params
      * @return string
@@ -36,9 +46,19 @@ class Renderer {
         $path = $this->hasNamespace($view) ? $this->replaceNamespace($view) . '.php' : $this->paths[self::DEFAULT_NAMESPACE] . DIRECTORY_SEPARATOR . $view . '.php';
         ob_start();
         $renderer = $this;
+        extract($this->globals);
         extract($params);
         require($path);
         return ob_get_clean();
+    }
+
+    /**
+     * Predicts to add global variables from the beginning
+     * @param string $key
+     * @param mixed $value
+     */
+    public function addGlobal(string $key, $value): void {
+        $this->globals[$key] = $value;
     }
 
     /**

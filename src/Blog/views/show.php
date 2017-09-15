@@ -1,7 +1,7 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: amacabr2
- * Date: 15/09/17
- * Time: 10:16
- */
+<?= $renderer->render('header', ['title' => $slug]); ?>
+
+    <div class="container">
+        Bienvenue sur l'article <?= $slug ?>
+    </div>
+
+<?= $renderer->render('footer') ?>
