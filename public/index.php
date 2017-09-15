@@ -7,12 +7,13 @@
  */
 
 use Framework\App;
+use Framework\Renderer\PHPRenderer;
+use Framework\Renderer\TwigRenderer;
 use GuzzleHttp\Psr7\ServerRequest;
 
 require '../vendor/autoload.php';
 
-$renderer = new \Framework\Renderer();
-$renderer->addPath(dirname(__DIR__) . '/src/views');
+$renderer = new TwigRenderer(dirname(__DIR__) . '/src/views');
 
 $app = new App([
     \App\Blog\BlogModule::class
