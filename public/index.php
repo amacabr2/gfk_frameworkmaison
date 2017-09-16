@@ -6,20 +6,28 @@
  * Time: 09:43
  */
 
+use DI\ContainerBuilder;
 use Framework\App;
-use Framework\Renderer\PHPRenderer;
-use Framework\Renderer\TwigRenderer;
 use GuzzleHttp\Psr7\ServerRequest;
 
 require '../vendor/autoload.php';
 
-$renderer = new TwigRenderer(dirname(__DIR__) . '/src/views');
-
-$app = new App([
+$modules = [
     \App\Blog\BlogModule::class
-], [
-    'renderer' => $renderer
-]);
+];
+
+$builder = new ContainerBuilder();
+$builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
+
+foreach ($modules as $module) {
+    if ($module::DEFINITIONS) {
+        $builder->addDefinitions($module::DEFINITIONS);
+    }
+}
+
+$container = $builder->build();
+
+$app = new App($container, $modules);
 
 $response = $app->run(ServerRequest::fromGlobals());
 
