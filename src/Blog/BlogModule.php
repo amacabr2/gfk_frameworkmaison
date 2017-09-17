@@ -22,6 +22,8 @@ class BlogModule extends Module {
 
     const DEFINITIONS = __DIR__ . '/config.php';
 
+    const MIGRATIONS = __DIR__ . '/db/migrations';
+
     /**
      * BlogModule constructor.
      * @param string $prefix

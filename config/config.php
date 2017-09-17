@@ -15,6 +15,11 @@ use Framework\Router;
 use Framework\Router\RouterTwigExtension;
 
 return [
+    'database.adapter' => 'mysql',
+    'database.host' => 'localhost',
+    'database.username' => 'amacabr2',
+    'database.password' => 'sub@bg10',
+    'database.name' => 'gfk_frameworkmaison',
     'views.path' => dirname(__DIR__) . '/src/views',
     'twig.extensions' => [
         get(RouterTwigExtension::class)
