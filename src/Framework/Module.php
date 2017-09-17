@@ -15,4 +15,6 @@ class Module {
 
     const MIGRATIONS = null;
 
+    const SEEDS = null;
+
 }
