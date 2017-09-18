@@ -35,7 +35,7 @@ class BlogModule extends Module {
     public function __construct(string $prefix, Router $router, RendererInterface $renderer) {
         $renderer->addPath('blog', __DIR__ . '/views');
         $router->get($prefix, BlogController::class, 'blog.index');
-        $router->get($prefix . '{slug:[a-z0-9\-]+}', BlogController::class, 'blog.show');
+        $router->get($prefix . '/{slug:[a-z0-9\-]+}-{id:[0-9]+}', BlogController::class, 'blog.show');
         $this->router = $router;
     }
 
