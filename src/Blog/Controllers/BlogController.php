@@ -9,6 +9,7 @@
 namespace App\Blog\Controllers;
 
 
+use App\Blog\Repositories\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -26,25 +27,24 @@ class BlogController {
     private $renderer;
 
     /**
-     * @var \PDO
-     */
-    private $pdo;
-
-    /**
      * @var Router
      */
     private $router;
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
 
     /**
      * BlogController constructor.
      * @param RendererInterface $renderer
-     * @param \PDO $pdo
      * @param Router $router
+     * @param PostRepository $postRepository
      */
-    public function __construct(RendererInterface $renderer, \PDO $pdo, Router $router) {
+    public function __construct(RendererInterface $renderer, Router $router, PostRepository $postRepository) {
         $this->renderer = $renderer;
-        $this->pdo = $pdo;
         $this->router = $router;
+        $this->postRepository = $postRepository;
     }
 
     public function __invoke(Request $request) {
@@ -58,9 +58,7 @@ class BlogController {
      * @return string
      */
     public function index(): string {
-        $posts = $this->pdo
-            ->query('SELECT * FROM posts ORDER BY created_at DESC LIMIT 10')
-            ->fetchAll();
+        $posts = $this->postRepository->findPaginated();
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 
@@ -71,11 +69,7 @@ class BlogController {
     public function show(Request $request) {
 
         $slug = $request->getAttribute('slug');
-        $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
-        $query->execute([
-            'id' => $request->getAttribute('id')
-        ]);
-        $post = $query->fetch();
+        $post = $this->postRepository->find($request->getAttribute('id'));
 
         if ($post->slug !== $slug) {
             return $this->redirect('blog.show', [
