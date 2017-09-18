@@ -9,12 +9,17 @@
 namespace App\Blog\Controllers;
 
 
+use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class BlogController {
+
+    use RouterAwareAction;
+
     /**
      * @var RendererInterface
      */
@@ -61,25 +66,26 @@ class BlogController {
 
     /**
      * @param Request $request
-     * @return string
+     * @return ResponseInterface|string
      */
-    public function show(Request $request): string {
+    public function show(Request $request) {
+
         $slug = $request->getAttribute('slug');
         $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
         $query->execute([
             'id' => $request->getAttribute('id')
         ]);
         $post = $query->fetch();
+
         if ($post->slug !== $slug) {
-            $redirectUri = $this->router->generateUri('blog.show', [
+            return $this->redirect('blog.show', [
                 'slug' => $post->slug,
                 'id' => $post->id
             ]);
-            return (new Response())
-                ->withStatus(301)
-                ->withHeader('Location', $redirectUri);
         }
+
         return $this->renderer->render('@blog/show', compact('post'));
+
     }
 
 }
