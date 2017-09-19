@@ -14,6 +14,7 @@ use Framework\Renderer\TwigRendererFactory;
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
 use Framework\Twig\PagerFantaExtension;
+use Framework\Twig\TextExtension;
 use Psr\Container\ContainerInterface;
 
 return [
@@ -25,7 +26,8 @@ return [
     'views.path' => dirname(__DIR__) . '/src/views',
     'twig.extensions' => [
         get(RouterTwigExtension::class),
-        get(PagerFantaExtension::class)
+        get(PagerFantaExtension::class),
+        get(TextExtension::class)
     ],
     Router::class => object(),
     RendererInterface::class => factory(TwigRendererFactory::class),

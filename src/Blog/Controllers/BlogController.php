@@ -60,7 +60,7 @@ class BlogController {
      */
     public function index(Request $request): string {
         $params =  $request->getQueryParams();
-        $posts = $this->postRepository->findPaginated(10, $params['p'] ?? 1);
+        $posts = $this->postRepository->findPaginated(12, $params['p'] ?? 1);
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 

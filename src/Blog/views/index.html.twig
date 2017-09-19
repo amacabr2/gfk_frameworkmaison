@@ -1,21 +1,46 @@
 {% extends 'layout.html.twig' %}
 
-{% block title 'Mes articles'%}
+{% block title 'Mes articles' %}
 
 {% block body %}
 
-    <h1>Bienvenue sur le blog</h1>
+    <div class="page-header">
+        <h1>Bienvenue sur le blog</h1>
+    </div>
 
-    <ul>
-        {% for post in posts %}
-            <li>
-                <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
-                    {{ post.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <div class="col-md-12">
+            {% for row in posts | batch(3) %}
+                <div class="card-deck">
+                    {% for post in row %}
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>
+                                    <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
+                                        {{ post.name }}
+                                    </a>
+                                </h2>
+                            </div>
+                            <div class="card-block">
+                                <p class="card-text">
+                                    {{ post.content | nl2br | excerpt}}
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}" class="btn btn-primary">Voir
+                                    l'article</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
-    {{ paginate(posts, 'blog.index') }}
+   <div class="row">
+       <div class="col-md-12">
+           {{ paginate(posts, 'blog.index') }}
+       </div>
+   </div>
 
 {% endblock %}
