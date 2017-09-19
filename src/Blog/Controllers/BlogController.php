@@ -51,14 +51,16 @@ class BlogController {
         if ($request->getAttribute('id')) {
             return $this->show($request);
         }
-        return $this->index();
+        return $this->index($request);
     }
 
     /**
+     * @param Request $request
      * @return string
      */
-    public function index(): string {
-        $posts = $this->postRepository->findPaginated();
+    public function index(Request $request): string {
+        $params =  $request->getQueryParams();
+        $posts = $this->postRepository->findPaginated(10, $params['p'] ?? 1);
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 

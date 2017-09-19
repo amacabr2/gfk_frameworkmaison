@@ -13,6 +13,7 @@ use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
+use Framework\Twig\PagerFantaExtension;
 use Psr\Container\ContainerInterface;
 
 return [
@@ -23,7 +24,8 @@ return [
     'database.name' => 'gfk_frameworkmaison',
     'views.path' => dirname(__DIR__) . '/src/views',
     'twig.extensions' => [
-        get(RouterTwigExtension::class)
+        get(RouterTwigExtension::class),
+        get(PagerFantaExtension::class)
     ],
     Router::class => object(),
     RendererInterface::class => factory(TwigRendererFactory::class),

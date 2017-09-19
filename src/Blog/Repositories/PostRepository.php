@@ -9,6 +9,9 @@
 namespace App\Blog\Repositories;
 
 
+use Framework\Database\PaginateQuery;
+use Pagerfanta\Pagerfanta;
+
 class PostRepository {
 
     /**
@@ -25,12 +28,19 @@ class PostRepository {
     }
 
     /**
-     * @return \stdClass[]
+     * @param int $perPage
+     * @param int $currentPage
+     * @return Pagerfanta
      */
-    public function findPaginated(): array {
-        return $this->pdo
-            ->query('SELECT * FROM posts ORDER BY created_at DESC LIMIT 10')
-            ->fetchAll();
+    public function findPaginated(int $perPage, int $currentPage): Pagerfanta {
+        $query = new PaginateQuery(
+            $this->pdo,
+            'SELECT * FROM posts ORDER BY created_at',
+            'SELECT COUNT(id) FROM posts'
+        );
+        return (new Pagerfanta($query))
+            ->setMaxPerPage($perPage)
+            ->setCurrentPage($currentPage);
     }
 
     /**
