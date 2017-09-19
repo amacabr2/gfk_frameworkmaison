@@ -9,6 +9,7 @@
 namespace App\Blog\Repositories;
 
 
+use App\Blog\Entity\Post;
 use Framework\Database\PaginateQuery;
 use Pagerfanta\Pagerfanta;
 
@@ -35,8 +36,9 @@ class PostRepository {
     public function findPaginated(int $perPage, int $currentPage): Pagerfanta {
         $query = new PaginateQuery(
             $this->pdo,
-            'SELECT * FROM posts ORDER BY created_at',
-            'SELECT COUNT(id) FROM posts'
+            'SELECT * FROM posts ORDER BY created_at DESC',
+            'SELECT COUNT(id) FROM posts',
+            Post::class
         );
         return (new Pagerfanta($query))
             ->setMaxPerPage($perPage)
@@ -45,13 +47,14 @@ class PostRepository {
 
     /**
      * @param int $id
-     * @return \stdClass
+     * @return Post
      */
-    public function find(int $id): \stdClass {
+    public function find(int $id): Post {
         $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
         $query->execute([
             'id' => $id
         ]);
+        $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
         return $query->fetch();
     }
 

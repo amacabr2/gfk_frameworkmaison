@@ -12,7 +12,7 @@ namespace Tests\Framework\Twig;
 use Framework\Twig\TextExtension;
 use PHPUnit\Framework\TestCase;
 
-class TwigExtensionTest extends TestCase {
+class TextExtensionTest extends TestCase {
 
     /**
      * @var TextExtension

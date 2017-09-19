@@ -10,6 +10,7 @@ namespace Tests\Blog\Controllers;
 
 
 use App\Blog\Controllers\BlogController;
+use App\Blog\Entity\Post;
 use App\Blog\Repositories\PostRepository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -68,10 +69,10 @@ class BlogControllerTest extends TestCase {
     /**
      * @param int $id
      * @param string $slug
-     * @return \stdClass
+     * @return Post
      */
-    private function makePost(int $id, string $slug): \stdClass {
-        $post = new \stdClass();
+    private function makePost(int $id, string $slug): Post {
+        $post = new Post();
         $post->id = $id;
         $post->slug = $slug;
         return $post;
