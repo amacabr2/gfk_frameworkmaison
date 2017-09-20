@@ -47,15 +47,15 @@ class PostRepository {
 
     /**
      * @param int $id
-     * @return Post
+     * @return Post|null
      */
-    public function find(int $id): Post {
+    public function find(int $id): ?Post {
         $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
         $query->execute([
             'id' => $id
         ]);
         $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
-        return $query->fetch();
+        return $query->fetch() ?: null;
     }
 
 }

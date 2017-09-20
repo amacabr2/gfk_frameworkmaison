@@ -19,7 +19,7 @@
     "zendframework/zend-expressive-fastroute": "^2.1",
     "twig/twig": "^2.4",
     "php-di/php-di": "^5.4",
-    "robmorgan/phinx": "^0.9.1",
+    "robmorgan/phinx": "^0.8.1",
     "pagerfanta/pagerfanta": "^1.0"
   },
   "require-dev": {
