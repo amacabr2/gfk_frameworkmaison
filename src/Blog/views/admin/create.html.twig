@@ -5,14 +5,14 @@
 {% block body %}
 
     <div class="page-header">
-        <h1>Éditer l'article {{ item.name }}</h1>
+        <h1>Créer l'article</h1>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ path('blog.admin.edit', {id: item.id}) }}" method="post">
+            <form action="{{ path('blog.admin.create') }}" method="post">
                 {% include '@blog/admin/form.html.twig' %}
-                <button class="btn btn-primary" type="submit">Éditer</button>
+                <button class="btn btn-primary" type="submit">Ajouter</button>
             </form>
         </div>
     </div>

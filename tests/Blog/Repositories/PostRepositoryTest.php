@@ -44,4 +44,11 @@ class PostRepositoryTest extends DatabaseTestCase {
         $this->assertEquals('demo', $post->slug);
     }
 
+    public function testInsert() {
+        $this->postRepository->insert(['name' => 'Salut', 'slug' => 'demo']);
+        $post = $this->postRepository->find(1);
+        $this->assertEquals('Salut', $post->name);
+        $this->assertEquals('demo', $post->slug);
+    }
+
 }

@@ -8,6 +8,10 @@
         <h1>Administrer les articles</h1>
     </div>
 
+    <p class="text-right">
+        <a class="btn btn-primary" href="{{ path('blog.admin.create') }}">Ajouter un article</a>
+    </p>
+
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped">
@@ -22,7 +26,7 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>
-                            <a href="{{ path('admin.blog.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
+                            <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -33,7 +37,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            {{ paginate(items, 'admin.blog.index') }}
+            {{ paginate(items, 'blog.admin.index') }}
         </div>
     </div>
 

@@ -64,12 +64,29 @@ class PostRepository {
      * @return bool
      */
     public function update(int $id, array $params): bool {
-        $fieldsQuery = join(', ', array_map(function ($field) {
-            return "$field = :$field";
-        }, array_keys($params)));
+        $fieldsQuery = $this->buildFieldQuery($params);
         $params['id'] = $id;
         $statement = $this->pdo->prepare("UPDATE posts SET $fieldsQuery WHERE id = :id");
         return $statement->execute($params);
+    }
+
+    /**
+     * @param $params
+     * @return bool
+     */
+    public function insert($params): bool {
+        $fields = array_keys($params);
+        $values = array_map(function ($field) {
+            return ':' . $field;
+        }, $fields);
+        $statement = $this->pdo->prepare("INSERT INTO posts (" . join(', ', $fields) . ") VALUES (". join(', ', $values) . ")");
+        return $statement->execute($params);
+    }
+
+    private function buildFieldQuery(array $params) {
+        return join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
     }
 
 }

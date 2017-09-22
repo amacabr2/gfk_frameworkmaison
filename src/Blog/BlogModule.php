@@ -40,8 +40,10 @@ class BlogModule extends Module {
         $router->get($prefix . '/{slug:[a-z0-9\-]+}-{id:[0-9]+}', BlogController::class, 'blog.show');
         if ($container->has('admin.prefix')) {
             $prefixAdmin = $container->get('admin.prefix');
-            $router->get($prefixAdmin . '/posts', AdminBlogController::class, 'admin.blog.index');
-            $router->get($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class, 'admin.blog.edit');
+            $router->get($prefixAdmin . '/posts', AdminBlogController::class, 'blog.admin.index');
+            $router->get($prefixAdmin . '/posts/new', AdminBlogController::class, 'blog.admin.create');
+            $router->post($prefixAdmin . '/posts/new', AdminBlogController::class);
+            $router->get($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class, 'blog.admin.edit');
             $router->post($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class);
         }
     }
