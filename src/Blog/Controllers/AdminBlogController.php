@@ -2,21 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: amacabr2
- * Date: 16/09/17
- * Time: 18:46
+ * Date: 22/09/17
+ * Time: 13:43
  */
 
 namespace App\Blog\Controllers;
-
 
 use App\Blog\Repositories\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Stdlib\ResponseInterface;
 
-class BlogController {
+class AdminBlogController {
 
     use RouterAwareAction;
 
@@ -48,7 +47,7 @@ class BlogController {
 
     public function __invoke(Request $request) {
         if ($request->getAttribute('id')) {
-            return $this->show($request);
+            return $this->edit($request);
         }
         return $this->index($request);
     }
@@ -59,28 +58,24 @@ class BlogController {
      */
     public function index(Request $request): string {
         $params =  $request->getQueryParams();
-        $posts = $this->postRepository->findPaginated(12, $params['p'] ?? 1);
-        return $this->renderer->render('@blog/index', compact('posts'));
+        $items = $this->postRepository->findPaginated(12, $params['p'] ?? 1);
+        return $this->renderer->render('@blog/admin/index', compact('items'));
     }
 
     /**
      * @param Request $request
      * @return ResponseInterface|string
      */
-    public function show(Request $request) {
-
-        $slug = $request->getAttribute('slug');
-        $post = $this->postRepository->find($request->getAttribute('id'));
-
-        if ($post->slug !== $slug) {
-            return $this->redirect('blog.show', [
-                'slug' => $post->slug,
-                'id' => $post->id
-            ]);
+    public function edit(Request $request) {
+        $item = $this->postRepository->find($request->getAttribute('id'));
+        if ($request->getMethod() === 'POST') {
+            $params = array_filter($request->getParsedBody(), function ($key) {
+                return in_array($key, ['name', 'slug', 'content']);
+            }, ARRAY_FILTER_USE_KEY);
+            $this->postRepository->update($item->id, $params);
+            return $this->redirect('admin.blog.index');
         }
-
-        return $this->renderer->render('@blog/show', compact('post'));
-
+        return $this->renderer->render('@blog/admin/edit', compact('item'));
     }
 
 }

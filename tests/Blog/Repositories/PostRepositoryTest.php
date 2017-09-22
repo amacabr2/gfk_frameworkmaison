@@ -36,4 +36,12 @@ class PostRepositoryTest extends DatabaseTestCase {
         $this->assertNull($post);
     }
 
+    public function testUpdate() {
+        $this->seedDatabase();
+        $this->postRepository->update(1, ['name' => 'Salut', 'slug' => 'demo']);
+        $post = $this->postRepository->find(1);
+        $this->assertEquals('Salut', $post->name);
+        $this->assertEquals('demo', $post->slug);
+    }
+
 }
