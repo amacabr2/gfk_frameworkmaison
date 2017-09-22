@@ -49,6 +49,21 @@ class Router {
     }
 
     /**
+     * @param string $prefixPath
+     * @param $callable
+     * @param null|string $prefixName
+     */
+    public function crud(string $prefixPath, $callable, ?string $prefixName) {
+        $this->get($prefixPath, $callable, "$prefixName.index");
+        $this->get($prefixPath . '/new', $callable, "$prefixName.create");
+        $this->post($prefixPath . '/new', $callable);
+        $this->get($prefixPath . '/{id:\d+}', $callable, "$prefixName.edit");
+        $this->post($prefixPath . '/{id:\d+}', $callable);
+        $this->delete($prefixPath . '/{id:\d+}', $callable, "$prefixName.delete");
+
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @return Route|null
      */
