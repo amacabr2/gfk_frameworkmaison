@@ -27,6 +27,10 @@
                         <td>{{ item.name }}</td>
                         <td>
                             <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
+                            <form style="display: inline" action="{{ path('blog.admin.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Êtes vous sûr ?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-danger">Supprimer</button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}

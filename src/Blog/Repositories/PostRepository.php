@@ -59,6 +59,19 @@ class PostRepository {
     }
 
     /**
+     * @param $params
+     * @return bool
+     */
+    public function insert($params): bool {
+        $fields = array_keys($params);
+        $values = array_map(function ($field) {
+            return ':' . $field;
+        }, $fields);
+        $statement = $this->pdo->prepare("INSERT INTO posts (" . join(', ', $fields) . ") VALUES (". join(', ', $values) . ")");
+        return $statement->execute($params);
+    }
+
+    /**
      * @param int $id
      * @param array $params
      * @return bool
@@ -71,16 +84,12 @@ class PostRepository {
     }
 
     /**
-     * @param $params
+     * @param int $id
      * @return bool
      */
-    public function insert($params): bool {
-        $fields = array_keys($params);
-        $values = array_map(function ($field) {
-            return ':' . $field;
-        }, $fields);
-        $statement = $this->pdo->prepare("INSERT INTO posts (" . join(', ', $fields) . ") VALUES (". join(', ', $values) . ")");
-        return $statement->execute($params);
+    public function delete(int $id): bool {
+        $statement = $this->pdo->prepare('DELETE FROM posts WHERE id = :id');
+        return $statement->execute(['id' => $id]);
     }
 
     private function buildFieldQuery(array $params) {

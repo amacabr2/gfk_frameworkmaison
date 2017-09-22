@@ -46,6 +46,9 @@ class AdminBlogController {
     }
 
     public function __invoke(Request $request) {
+        if ($request->getMethod() === 'DELETE') {
+            return $this->delete($request);
+        }
         if (substr((string)$request->getUri(), -3) === 'new') {
             return $this->create($request);
         }
@@ -95,6 +98,15 @@ class AdminBlogController {
             return $this->redirect('blog.admin.index');
         }
         return $this->renderer->render('@blog/admin/edit', compact('item'));
+    }
+
+    /**
+     * @param Request $request
+     * @return ResponseInterface|string
+     */
+    public function delete(Request $request) {
+        $this->postRepository->delete($request->getAttribute('id'));
+        return $this->redirect('blog.admin.index');
     }
 
     /**

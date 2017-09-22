@@ -44,6 +44,10 @@ class Router {
         $this->router->addRoute(new ZendRoute($path, $callable, ['POST'], $name));
     }
 
+    public function delete(string $path, $callable, ?string $name = null) {
+        $this->router->addRoute(new ZendRoute($path, $callable, ['DELETE'], $name));
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @return Route|null

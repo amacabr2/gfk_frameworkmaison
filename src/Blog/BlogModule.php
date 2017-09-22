@@ -33,11 +33,13 @@ class BlogModule extends Module {
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container) {
+
         $prefix = $container->get('blog.prefix');
         $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/views');
         $router = $container->get(Router::class);
         $router->get($prefix, BlogController::class, 'blog.index');
         $router->get($prefix . '/{slug:[a-z0-9\-]+}-{id:[0-9]+}', BlogController::class, 'blog.show');
+
         if ($container->has('admin.prefix')) {
             $prefixAdmin = $container->get('admin.prefix');
             $router->get($prefixAdmin . '/posts', AdminBlogController::class, 'blog.admin.index');
@@ -45,7 +47,9 @@ class BlogModule extends Module {
             $router->post($prefixAdmin . '/posts/new', AdminBlogController::class);
             $router->get($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class, 'blog.admin.edit');
             $router->post($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class);
+            $router->delete($prefixAdmin . '/posts/{id:\d+}', AdminBlogController::class, 'blog.admin.delete');
         }
+
     }
 
 
