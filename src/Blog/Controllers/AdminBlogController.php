@@ -12,6 +12,8 @@ use App\Blog\Repositories\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Framework\Session\FlashService;
+use Framework\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Stdlib\ResponseInterface;
 
@@ -28,21 +30,29 @@ class AdminBlogController {
      * @var Router
      */
     private $router;
+
     /**
      * @var PostRepository
      */
     private $postRepository;
 
     /**
+     * @var FlashService
+     */
+    private $flash;
+
+    /**
      * BlogController constructor.
      * @param RendererInterface $renderer
      * @param Router $router
      * @param PostRepository $postRepository
+     * @param FlashService $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, PostRepository $postRepository) {
+    public function __construct(RendererInterface $renderer, Router $router, PostRepository $postRepository, FlashService $flash) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postRepository = $postRepository;
+        $this->flash = $flash;
     }
 
     public function __invoke(Request $request) {
@@ -80,6 +90,7 @@ class AdminBlogController {
                 'created_at' => date('H-m-d H:i:s')
             ]);
             $this->postRepository->insert($params);
+            $this->flash->success('L\'article a bien été créé');
             return $this->redirect('blog.admin.index');
         }
         return $this->renderer->render('@blog/admin/create', compact('item'));
@@ -95,6 +106,7 @@ class AdminBlogController {
             $params = $this->getParams($request);
             $params['updated_at'] = date('H-m-d H:i:s');
             $this->postRepository->update($item->id, $params);
+            $this->flash->success('L\'article a bien été modifié');
             return $this->redirect('blog.admin.index');
         }
         return $this->renderer->render('@blog/admin/edit', compact('item'));
@@ -106,6 +118,7 @@ class AdminBlogController {
      */
     public function delete(Request $request) {
         $this->postRepository->delete($request->getAttribute('id'));
+        $this->flash->success('L\'article a bien été supprimé');
         return $this->redirect('blog.admin.index');
     }
 
