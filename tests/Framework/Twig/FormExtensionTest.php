@@ -43,6 +43,16 @@ class FormExtensionTest extends TestCase {
         ", $html);
     }
 
+    public function testFieldWithClass() {
+        $html = $this->formExtension->field([], 'name', 'demo', 'Titre', ['class' =>'demo']);
+        $this->assertSimilar("
+            <div class=\"form-group\">
+                <label for=\"name\">Titre</label>
+                <input type=\"text\" id=\"name\" name=\"name\" class=\"form-control demo\" value=\"demo\">
+            </div>
+        ", $html);
+    }
+
     public function testTextarea() {
         $html = $this->formExtension->field([], 'name', 'demo', 'Titre', ['type' => 'textarea']);
         $this->assertSimilar("

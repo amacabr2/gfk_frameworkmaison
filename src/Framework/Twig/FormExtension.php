@@ -31,15 +31,16 @@ class FormExtension extends \Twig_Extension {
      * @param array $options
      * @return string
      */
-    public function field(array $context, string $key, ?string $value, ?string $label = null, array $options = []): string {
+    public function field(array $context, string $key, $value, ?string $label = null, array $options = []): string {
 
         $type = $options['type'] ?? 'text';
         $class = 'form-group';
         $error = $this->getErrorsHTML($context, $key);
+        $value = $this->convertValue($value);
         $attributes = [
             'id' => $key,
             'name' => $key,
-            'class' => 'form-control'
+            'class' => trim('form-control ' . ($options['class'] ?? ''))
         ];
 
         if ($error) {
@@ -102,6 +103,17 @@ class FormExtension extends \Twig_Extension {
         return implode(' ', array_map(function ($key, $value) {
             return "$key=\"$value\"";
         }, array_keys($attributes), $attributes));
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    private function convertValue($value): string {
+        if ($value instanceof \DateTime) {
+            return $value->format('Y-m-d H:i:s');
+        }
+        return (string)$value;
     }
 
 }

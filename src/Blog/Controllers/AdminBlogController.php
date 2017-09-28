@@ -86,10 +86,6 @@ class AdminBlogController {
     public function create(Request $request) {
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
-            $params = array_merge($params, [
-                'updated_at' => date('H-m-d H:i:s'),
-                'created_at' => date('H-m-d H:i:s')
-            ]);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->postRepository->insert($params);
@@ -139,9 +135,12 @@ class AdminBlogController {
      * @return array
      */
     private function getParams(Request $request): array {
-        return array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'slug', 'content']);
+        $params =  array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, ['name', 'slug', 'content', 'created_at']);
         }, ARRAY_FILTER_USE_KEY);
+        return array_merge($params, [
+            'updated_at' => date('H-m-d H:i:s'),
+        ]);
     }
 
     private function getValidator(Request $request) {
@@ -150,7 +149,8 @@ class AdminBlogController {
             ->length('content', 10)
             ->length('name', 2, 250)
             ->length('slug', 2, 50)
-            ->slug('slug');
+            ->slug('slug')
+            ->dateTime('created_at');
     }
 
 }
