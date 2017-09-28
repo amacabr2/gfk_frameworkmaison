@@ -8,6 +8,7 @@
 
 namespace App\Blog\Controllers;
 
+use App\Blog\Entity\Post;
 use App\Blog\Repositories\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
@@ -95,6 +96,8 @@ class AdminBlogController {
             $item = $params;
             $errors = $validator->getErrors();
         }
+        $item = new Post();
+        $item->created_at = new \DateTime();
         return $this->renderer->render('@blog/admin/create', compact('item', 'errors'));
     }
 
@@ -145,7 +148,7 @@ class AdminBlogController {
 
     private function getValidator(Request $request) {
         return (new Validator($request->getParsedBody()))
-            ->required('content', 'name', 'slug')
+            ->required('content', 'name', 'slug', 'created_at')
             ->length('content', 10)
             ->length('name', 2, 250)
             ->length('slug', 2, 50)
