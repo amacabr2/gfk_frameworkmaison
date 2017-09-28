@@ -148,7 +148,7 @@ class AdminBlogController {
         return (new Validator($request->getParsedBody()))
             ->required('content', 'name', 'slug')
             ->length('content', 10)
-            ->length('title', 2, 250)
+            ->length('name', 2, 250)
             ->length('slug', 2, 50)
             ->slug('slug');
     }

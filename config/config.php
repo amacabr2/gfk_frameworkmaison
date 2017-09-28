@@ -16,6 +16,7 @@ use Framework\Router\RouterTwigExtension;
 use Framework\Session\PHPSession;
 use Framework\Session\SessionInterface;
 use Framework\Twig\FlashExtension;
+use Framework\Twig\FormExtension;
 use Framework\Twig\PagerFantaExtension;
 use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
@@ -34,6 +35,7 @@ return [
         get(TextExtension::class),
         get(TimeExtension::class),
         get(FlashExtension::class),
+        get(FormExtension::class)
     ],
     SessionInterface::class => object(PHPSession::class),
     Router::class => object(),
