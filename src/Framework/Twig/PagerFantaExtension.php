@@ -14,6 +14,7 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\View\TwitterBootstrap4View;
 
 class PagerFantaExtension extends \Twig_Extension {
+
     /**
      * @var Router
      */

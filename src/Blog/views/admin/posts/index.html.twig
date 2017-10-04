@@ -9,7 +9,7 @@
     </div>
 
     <p class="text-right">
-        <a class="btn btn-primary" href="{{ path('blog.admin.create') }}">Ajouter un article</a>
+        <a class="btn btn-primary" href="{{ path(routePrefix ~ '.create') }}">Ajouter un article</a>
     </p>
 
     <div class="row">
@@ -26,8 +26,8 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>
-                            <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
-                            <form style="display: inline" action="{{ path('blog.admin.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Êtes vous sûr ?')">
+                            <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
+                            <form style="display: inline" action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Êtes vous sûr ?')">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button class="btn btn-danger">Supprimer</button>
                             </form>
@@ -41,7 +41,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            {{ paginate(items, 'blog.admin.index') }}
+            {{ paginate(items, routePrefix ~ '.index') }}
         </div>
     </div>
 

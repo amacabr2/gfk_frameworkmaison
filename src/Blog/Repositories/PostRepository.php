@@ -22,7 +22,7 @@ class PostRepository extends Repository {
     protected $table = 'posts';
 
     protected function paginationQuery() {
-        return parent::paginationQuery() . " ORDER BY created BY DESC";
+        return parent::paginationQuery() . " ORDER BY created_at DESC";
     }
 
 }

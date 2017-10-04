@@ -10,8 +10,8 @@
 
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ path('blog.admin.create') }}" method="post">
-                {% include '@blog/admin/form.html.twig' %}
+            <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+                {% include viewPath ~ '/form.html.twig' %}
                 <button class="btn btn-primary" type="submit">Ajouter</button>
             </form>
         </div>

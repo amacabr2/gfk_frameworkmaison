@@ -10,27 +10,27 @@
 
     <div class="row">
         <div class="col-md-12">
-            {% for row in posts | batch(3) %}
+            {% for row in items | batch(3) %}
                 <div class="card-deck">
-                    {% for post in row %}
+                    {% for item in row %}
                         <div class="card">
                             <div class="card-header">
                                 <h2>
-                                    <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
-                                        {{ post.name }}
+                                    <a href="{{ path(routePrefix ~ '.show', {slug: item.slug, id: item.id}) }}">
+                                        {{ item.name }}
                                     </a>
                                 </h2>
                             </div>
                             <div class="card-block">
                                 <p class="card-text">
-                                    {{ post.content | excerpt| nl2br }}
+                                    {{ item.content | excerpt| nl2br }}
                                 </p>
                                 <p class="text-muted">
-                                    {{ post.created_at | ago }}
+                                    {{ item.created_at | ago }}
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}" class="btn btn-primary">Voir
+                                <a href="{{ path(routePrefix ~ '.show', {slug: item.slug, id: item.id}) }}" class="btn btn-primary">Voir
                                     l'article</a>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
 
    <div class="row">
        <div class="col-md-12">
-           {{ paginate(posts, 'blog.index') }}
+           {{ paginate(items, routePrefix ~ '.index') }}
        </div>
    </div>
 
