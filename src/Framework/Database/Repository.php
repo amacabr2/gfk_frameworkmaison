@@ -58,6 +58,17 @@ class Repository {
         return "SELECT * FROM {$this->table}";
     }
 
+    public function findList():array {
+        $list = [];
+        $results = $this->pdo
+            ->query("SELECT * FROM $this->table")
+            ->fetchAll(PDO::FETCH_NUM);
+        foreach ($results as $result) {
+            $list[$result[0]] = $result[1];
+        }
+        return $list;
+    }
+
     /**
      * @param int $id
      * @return mixed
@@ -95,7 +106,7 @@ class Repository {
     public function update(int $id, array $params): bool {
         $fieldsQuery = $this->buildFieldQuery($params);
         $params['id'] = $id;
-        $statement = $this->pdo->prepare("UPDATE {$this->table} SET $fieldsQuery WHERE id = :id");
+        $statement = $this->pdo->prepare("UPDATE $this->table SET $fieldsQuery WHERE id = :id");
         return $statement->execute($params);
     }
 
@@ -106,6 +117,16 @@ class Repository {
     public function delete(int $id): bool {
         $statement = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = :id");
         return $statement->execute(['id' => $id]);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function exists(int $id): bool {
+        $statement = $this->pdo->prepare("SELECT id FROM {$this->table} WHERE id = ?");
+        $statement->execute([$id]);
+        return $statement->fetchColumn() !== false;
     }
 
     private function buildFieldQuery(array $params) {

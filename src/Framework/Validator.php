@@ -10,7 +10,9 @@ namespace Framework;
 
 
 use DateTime;
+use Framework\Database\Repository;
 use Framework\Validator\ValidationError;
+use PDO;
 
 class Validator {
 
@@ -103,6 +105,16 @@ class Validator {
         $errors = DateTime::getLastErrors();
         if ($errors['error_count'] > 0 or $errors['warning_count'] > 0 or $date === false) {
             $this->addErrors($key, 'datetime', [$format]);
+        }
+        return $this;
+    }
+
+    public function exists(string $key, string $repository, PDO $pdo) {
+        $value = $this->getValue($key);
+        $statement = $pdo->prepare("SELECT id FROM $repository WHERE id = ?");
+        $statement->execute([$value]);
+        if ($statement->fetchColumn() === false) {
+            $this->addErrors($key, "exists", [$repository]);
         }
         return $this;
     }

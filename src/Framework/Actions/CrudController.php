@@ -8,6 +8,7 @@
 
 namespace Framework\Actions;
 
+use Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
@@ -30,7 +31,7 @@ class CrudController {
     private $router;
 
     /**
-     * @var mixed
+     * @var Repository
      */
     private $repository;
 
@@ -62,10 +63,10 @@ class CrudController {
      * BlogController constructor.
      * @param RendererInterface $renderer
      * @param Router $router
-     * @param $repository
+     * @param Repository $repository
      * @param FlashService $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, $repository, FlashService $flash) {
+    public function __construct(RendererInterface $renderer, Router $router, Repository $repository, FlashService $flash) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->repository = $repository;
@@ -114,7 +115,7 @@ class CrudController {
             $item = $params;
             $errors = $validator->getErrors();
         }
-        return $this->renderer->render("$this->viewPath/create", compact('item', 'errors'));
+        return $this->renderer->render("$this->viewPath/create", $this->formParams(compact('item', 'errors')));
     }
 
     /**
@@ -135,7 +136,7 @@ class CrudController {
             $params['id'] = $item->id;
             $item = $params;
         }
-        return $this->renderer->render("$this->viewPath/edit", compact('item', 'errors'));
+        return $this->renderer->render("$this->viewPath/edit", $this->formParams(compact('item', 'errors')));
     }
 
     /**
@@ -171,6 +172,14 @@ class CrudController {
      */
     protected function getNewEntity() {
         return [];
+    }
+
+    /**
+     * @param $params
+     * @return array
+     */
+    protected function formParams(array $params): array {
+        return $params;
     }
 
 }

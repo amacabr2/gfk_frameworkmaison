@@ -22,11 +22,13 @@ class PostRepositoryTest extends DatabaseTestCase {
 
     public function setUp() {
         parent::setUp();
-        $this->postRepository = new PostRepository($this->pdo);
+        $pdo = $this->getPDO();
+        $this->migrateDatabase($pdo);
+        $this->postRepository = new PostRepository($pdo);
     }
 
     public function testFind() {
-        $this->seedDatabase();
+        $this->seedDatabase($this->postRepository->getPdo());
         $post = $this->postRepository->find(1);
         $this->assertInstanceOf(Post::class, $post);
     }
@@ -37,7 +39,7 @@ class PostRepositoryTest extends DatabaseTestCase {
     }
 
     public function testUpdate() {
-        $this->seedDatabase();
+        $this->seedDatabase($this->postRepository->getPdo());
         $this->postRepository->update(1, ['name' => 'Salut', 'slug' => 'demo']);
         $post = $this->postRepository->find(1);
         $this->assertEquals('Salut', $post->name);
@@ -54,10 +56,10 @@ class PostRepositoryTest extends DatabaseTestCase {
     public function testDelete() {
         $this->postRepository->insert(['name' => 'Salut', 'slug' => 'demo']);
         $this->postRepository->insert(['name' => 'Salut', 'slug' => 'demo']);
-        $count = $this->pdo->query('SELECT COUNT(id) FROM posts')->fetchColumn();
+        $count = $this->postRepository->getPdo()->query('SELECT COUNT(id) FROM posts')->fetchColumn();
         $this->assertEquals(2, (int)$count);
-        $this->postRepository->delete($this->pdo->lastInsertId());
-        $count = $this->pdo->query('SELECT COUNT(id) FROM posts')->fetchColumn();
+        $this->postRepository->delete($this->postRepository->getPdo()->lastInsertId());
+        $count = $this->postRepository->getPdo()->query('SELECT COUNT(id) FROM posts')->fetchColumn();
         $this->assertEquals(1, (int)$count);
     }
 
