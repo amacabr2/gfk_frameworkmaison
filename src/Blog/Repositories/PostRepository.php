@@ -11,91 +11,18 @@ namespace App\Blog\Repositories;
 
 use App\Blog\Entity\Post;
 use Framework\Database\PaginateQuery;
+use Framework\Database\Repository;
 use Pagerfanta\Pagerfanta;
 
-class PostRepository {
+class PostRepository extends Repository {
 
-    /**
-     * @var \PDO
-     */
-    private $pdo;
 
-    /**
-     * PostRepository constructor.
-     * @param \PDO $pdo
-     */
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
-    }
+    protected $entity = Post::class;
 
-    /**
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Pagerfanta
-     */
-    public function findPaginated(int $perPage, int $currentPage): Pagerfanta {
-        $query = new PaginateQuery(
-            $this->pdo,
-            'SELECT * FROM posts ORDER BY created_at DESC',
-            'SELECT COUNT(id) FROM posts',
-            Post::class
-        );
-        return (new Pagerfanta($query))
-            ->setMaxPerPage($perPage)
-            ->setCurrentPage($currentPage);
-    }
+    protected $table = 'posts';
 
-    /**
-     * @param int $id
-     * @return Post|null
-     */
-    public function find(int $id): ?Post {
-        $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
-        $query->execute([
-            'id' => $id
-        ]);
-        $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
-        return $query->fetch() ?: null;
-    }
-
-    /**
-     * @param $params
-     * @return bool
-     */
-    public function insert($params): bool {
-        $fields = array_keys($params);
-        $values = array_map(function ($field) {
-            return ':' . $field;
-        }, $fields);
-        $statement = $this->pdo->prepare("INSERT INTO posts (" . join(', ', $fields) . ") VALUES (". join(', ', $values) . ")");
-        return $statement->execute($params);
-    }
-
-    /**
-     * @param int $id
-     * @param array $params
-     * @return bool
-     */
-    public function update(int $id, array $params): bool {
-        $fieldsQuery = $this->buildFieldQuery($params);
-        $params['id'] = $id;
-        $statement = $this->pdo->prepare("UPDATE posts SET $fieldsQuery WHERE id = :id");
-        return $statement->execute($params);
-    }
-
-    /**
-     * @param int $id
-     * @return bool
-     */
-    public function delete(int $id): bool {
-        $statement = $this->pdo->prepare('DELETE FROM posts WHERE id = :id');
-        return $statement->execute(['id' => $id]);
-    }
-
-    private function buildFieldQuery(array $params) {
-        return join(', ', array_map(function ($field) {
-            return "$field = :$field";
-        }, array_keys($params)));
+    protected function paginationQuery() {
+        return parent::paginationQuery() . " ORDER BY created BY DESC";
     }
 
 }
