@@ -1,0 +1,20 @@
+{% extends '@admin/layout.html.twig' %}
+
+{% block title 'Administration d\'articles' %}
+
+{% block body %}
+
+    <div class="page-header">
+        <h1>Créer une catégorie</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+                {% include viewPath ~ '/form.html.twig' %}
+                <button class="btn btn-primary" type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -8,7 +8,8 @@
 
 namespace App\Blog;
 
-use App\Blog\Controllers\AdminBlogController;
+use App\Blog\Controllers\CategoryCrudController;
+use App\Blog\Controllers\PostCrudController;
 use App\Blog\Controllers\BlogController;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
@@ -42,7 +43,8 @@ class BlogModule extends Module {
 
         if ($container->has('admin.prefix')) {
             $prefixAdmin = $container->get('admin.prefix');
-            $router->crud("$prefixAdmin/posts", AdminBlogController::class, 'blog.admin');
+            $router->crud("$prefixAdmin/posts", PostCrudController::class, 'blog.admin.post');
+            $router->crud("$prefixAdmin/categories", CategoryCrudController::class, 'blog.admin.category');
         }
 
     }

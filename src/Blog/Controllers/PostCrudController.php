@@ -16,14 +16,13 @@ use Framework\Actions\CrudController;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
-use Framework\Validator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AdminBlogController extends CrudController {
+class PostCrudController extends CrudController {
 
     protected $viewPath = "@blog/admin/posts";
 
-    protected $routePrefix = "blog.admin";
+    protected $routePrefix = "blog.admin.post";
 
     protected $messages = [
         'create' => "L'article a bien été crée",
@@ -48,6 +47,10 @@ class AdminBlogController extends CrudController {
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Framework\Validator
+     */
     protected function getValidator(Request $request) {
         return parent::getValidator($request)
             ->required('content', 'name', 'slug', 'created_at')

@@ -60,7 +60,6 @@ class Router {
         $this->get($prefixPath . '/{id:\d+}', $callable, "$prefixName.edit");
         $this->post($prefixPath . '/{id:\d+}', $callable);
         $this->delete($prefixPath . '/{id:\d+}', $callable, "$prefixName.delete");
-
     }
 
     /**
