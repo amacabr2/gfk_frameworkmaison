@@ -54,10 +54,16 @@ class Repository {
             ->setCurrentPage($currentPage);
     }
 
+    /**
+     * @return string
+     */
     protected function paginationQuery() {
         return "SELECT * FROM {$this->table}";
     }
 
+    /**
+     * @return array
+     */
     public function findList():array {
         $list = [];
         $results = $this->pdo
@@ -70,8 +76,43 @@ class Repository {
     }
 
     /**
+     * @return array
+     */
+    public function findAll(): array {
+        $statement = $this->pdo->query("SELECT * FROM $this->table");
+        if ($this->entity) {
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        } else {
+            $statement->setFetchMode(PDO::FETCH_OBJ);
+        }
+        return $statement->fetchAll();
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     * @return mixed
+     * @throws NoRecordException
+     */
+    public function findBy(string $field, string $value) {
+        $statement = $this->pdo->prepare("SELECT * FROM $this->table WHERE $field = ?");
+        $statement->execute([$value]);
+        if ($this->entity) {
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        } else {
+            $statement->setFetchMode(PDO::FETCH_OBJ);
+        }
+        $record =  $statement->fetch();
+        if ($record === false) {
+            throw new NoRecordException();
+        }
+        return $record;
+    }
+
+    /**
      * @param int $id
      * @return mixed
+     * @throws NoRecordException
      */
     public function find(int $id) {
         $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
@@ -81,7 +122,11 @@ class Repository {
         if ($this->entity) {
             $query->setFetchMode(PDO::FETCH_CLASS, $this->entity);
         }
-        return $query->fetch() ?: null;
+        $record =  $query->fetch();
+        if ($record === false) {
+            throw new NoRecordException();
+        }
+        return $record;
     }
 
     /**
@@ -129,6 +174,10 @@ class Repository {
         return $statement->fetchColumn() !== false;
     }
 
+    /**
+     * @param array $params
+     * @return string
+     */
     private function buildFieldQuery(array $params) {
         return join(', ', array_map(function ($field) {
             return "$field = :$field";

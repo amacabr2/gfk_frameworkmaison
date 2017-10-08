@@ -11,6 +11,7 @@ namespace Tests\Blog\Controllers;
 
 use App\Blog\Controllers\BlogController;
 use App\Blog\Entity\Post;
+use App\Blog\Repositories\CategoryRepository;
 use App\Blog\Repositories\PostRepository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -25,20 +26,36 @@ class BlogControllerTest extends TestCase {
      */
     private $action;
 
+    /**
+     * @var RendererInterface
+     */
     private $renderer;
 
+    /**
+     * @var Router
+     */
     private $router;
 
+    /**
+     * @var PostRepository
+     */
     private $postRepository;
+
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
 
     public function setUp() {
         $this->renderer = $this->prophesize(RendererInterface::class);
         $this->router = $this->prophesize(Router::class);
         $this->postRepository = $this->prophesize(PostRepository::class);
+        $this->categoryRepository = $this->prophesize(CategoryRepository::class);
         $this->action = new BlogController(
             $this->renderer->reveal(),
             $this->router->reveal(),
-            $this->postRepository->reveal()
+            $this->postRepository->reveal(),
+            $this->categoryRepository->reveal()
         );
     }
 
@@ -55,7 +72,6 @@ class BlogControllerTest extends TestCase {
     }
 
     public function testShowRender() {
-
         $post = $this->makePost(9, 'azerty-qwerty');
         $request = (new ServerRequest('GET', '/'))
             ->withAttribute('id', $post->id)

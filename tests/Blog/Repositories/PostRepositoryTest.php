@@ -11,6 +11,7 @@ namespace Tests\Blog\Repositories;
 
 use App\Blog\Entity\Post;
 use App\Blog\Repositories\PostRepository;
+use Framework\Database\NoRecordException;
 use Tests\DatabaseTestCase;
 
 class PostRepositoryTest extends DatabaseTestCase {
@@ -34,8 +35,8 @@ class PostRepositoryTest extends DatabaseTestCase {
     }
 
     public function testFindNotFoundRecord() {
+        $this->expectException(NoRecordException::class);
         $post = $this->postRepository->find(1000000);
-        $this->assertNull($post);
     }
 
     public function testUpdate() {
