@@ -99,6 +99,11 @@ class Validator {
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param string $format
+     * @return Validator
+     */
     public function dateTime(string $key, string $format = 'Y-m-d H:i:s'): self {
         $value = $this->getValue($key);
         $date = DateTime::createFromFormat($format, $value);
@@ -109,7 +114,13 @@ class Validator {
         return $this;
     }
 
-    public function exists(string $key, string $repository, PDO $pdo) {
+    /**
+     * @param string $key
+     * @param string $repository
+     * @param PDO $pdo
+     * @return Validator
+     */
+    public function exists(string $key, string $repository, PDO $pdo): self {
         $value = $this->getValue($key);
         $statement = $pdo->prepare("SELECT id FROM $repository WHERE id = ?");
         $statement->execute([$value]);
@@ -119,6 +130,32 @@ class Validator {
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param string $repository
+     * @param PDO $pdo
+     * @param int|null $exclude
+     * @return Validator
+     */
+    public function unique(string $key, string $repository, PDO $pdo, ?int $exclude = null): self {
+        $value = $this->getValue($key);
+        $query = "SELECT id FROM $repository WHERE $key = ?";
+        $params = [$value];
+        if ($exclude !== null){
+            $query .= " AND id != ?";
+            $params[] = $exclude;
+        }
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        if ($statement->fetchColumn() !== false) {
+            $this->addErrors($key, "unique", [$value]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
     public function isValid(): bool {
         return empty($this->errors);
     }

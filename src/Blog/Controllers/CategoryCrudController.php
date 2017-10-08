@@ -50,7 +50,8 @@ class CategoryCrudController extends CrudController {
             ->required( 'name', 'slug')
             ->length('name', 2, 250)
             ->length('slug', 2, 50)
-            ->slug('slug');
+            ->slug('slug')
+            ->unique('slug', $this->repository->getTable(), $this->repository->getPdo(), $request->getAttribute('id'));
     }
 
 }

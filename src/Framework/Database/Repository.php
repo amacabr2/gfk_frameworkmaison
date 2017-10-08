@@ -55,13 +55,6 @@ class Repository {
     }
 
     /**
-     * @return string
-     */
-    protected function paginationQuery() {
-        return "SELECT * FROM {$this->table}";
-    }
-
-    /**
      * @return array
      */
     public function findList():array {
@@ -95,18 +88,7 @@ class Repository {
      * @throws NoRecordException
      */
     public function findBy(string $field, string $value) {
-        $statement = $this->pdo->prepare("SELECT * FROM $this->table WHERE $field = ?");
-        $statement->execute([$value]);
-        if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        } else {
-            $statement->setFetchMode(PDO::FETCH_OBJ);
-        }
-        $record =  $statement->fetch();
-        if ($record === false) {
-            throw new NoRecordException();
-        }
-        return $record;
+        return $this->fetchOrFail("SELECT * FROM $this->table WHERE $field = ?", [$value]);
     }
 
     /**
@@ -115,18 +97,7 @@ class Repository {
      * @throws NoRecordException
      */
     public function find(int $id) {
-        $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
-        $query->execute([
-            'id' => $id
-        ]);
-        if ($this->entity) {
-            $query->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        }
-        $record =  $query->fetch();
-        if ($record === false) {
-            throw new NoRecordException();
-        }
-        return $record;
+        return $this->fetchOrFail("SELECT * FROM {$this->table} WHERE id = :id", ['id' => $id]);
     }
 
     /**
@@ -175,16 +146,6 @@ class Repository {
     }
 
     /**
-     * @param array $params
-     * @return string
-     */
-    private function buildFieldQuery(array $params) {
-        return join(', ', array_map(function ($field) {
-            return "$field = :$field";
-        }, array_keys($params)));
-    }
-
-    /**
      * @return string
      */
     public function getTable(): string {
@@ -203,6 +164,44 @@ class Repository {
      */
     public function getPdo(): PDO {
         return $this->pdo;
+    }
+
+    /**
+     * @param string $query
+     * @param array $params
+     * @return mixed
+     * @throws NoRecordException
+     */
+    protected function fetchOrFail(string $query, array $params = []) {
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($params);
+        if ($this->entity) {
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        } else {
+            $statement->setFetchMode(PDO::FETCH_OBJ);
+        }
+        $record =  $statement->fetch();
+        if ($record === false) {
+            throw new NoRecordException();
+        }
+        return $record;
+    }
+
+    /**
+     * @return string
+     */
+    protected function paginationQuery() {
+        return "SELECT * FROM {$this->table}";
+    }
+
+    /**
+     * @param array $params
+     * @return string
+     */
+    private function buildFieldQuery(array $params) {
+        return join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
     }
 
 }

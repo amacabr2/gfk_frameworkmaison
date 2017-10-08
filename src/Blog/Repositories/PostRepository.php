@@ -67,19 +67,13 @@ class PostRepository extends Repository {
             ->setCurrentPage($currentPage);
     }
 
-    public function findWithCategory($getAttribute) {
-        $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
-        $query->execute([
-            'id' => $id
-        ]);
-        if ($this->entity) {
-            $query->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        }
-        $record =  $query->fetch();
-        if ($record === false) {
-            throw new NoRecordException();
-        }
-        return $record;
+    public function findWithCategory(int $id) {
+        return $this->fetchOrFail("
+            SELECT p.*, c.name AS category_name, c.slug AS category_slug
+            FROM posts AS p 
+            LEFT JOIN categories AS c ON c.id = p.category_id
+            WHERE p.id = ?
+        ", [$id]);
     }
 
 }

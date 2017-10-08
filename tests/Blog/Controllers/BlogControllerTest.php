@@ -65,7 +65,7 @@ class BlogControllerTest extends TestCase {
         $request = (new ServerRequest('GET', '/'))
             ->withAttribute('id', $post->id)
             ->withAttribute('slug', 'demo');
-        $this->postRepository->find($post->id)->willReturn($post);
+        $this->postRepository->findWithCategory($post->id)->willReturn($post);
         $response = call_user_func_array($this->action, [$request]);
         $this->assertEquals(301, $response->getStatusCode());
         $this->assertEquals(['/demo2'], $response->getHeader('Location'));
@@ -76,7 +76,7 @@ class BlogControllerTest extends TestCase {
         $request = (new ServerRequest('GET', '/'))
             ->withAttribute('id', $post->id)
             ->withAttribute('slug', 'demo');
-        $this->postRepository->find($post->id)->willReturn($post);
+        $this->postRepository->findWithCategory($post->id)->willReturn($post);
         $this->renderer->render('@blog/show', ['post' => $post])->willReturn('');
         $response = call_user_func_array($this->action, [$request]);
         $this->assertEquals(true, true);

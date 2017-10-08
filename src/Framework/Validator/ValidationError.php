@@ -34,7 +34,8 @@ class ValidationError {
         'beetweenLength' => "Le champ %s doit contenir entre %d et %d caractères",
         'maxLength' => "Le champ %s doit contenir moins de %d caractères",
         'datetime' => "Le champ %s doit contenir une date valide (%s)",
-        'exists' => "Le champ %s n'éxiste pas dans la table %s"
+        'exists' => "Le champ %s n'éxiste pas dans la table %s",
+        'unique' => "Doit être unique"
     ];
 
     /**

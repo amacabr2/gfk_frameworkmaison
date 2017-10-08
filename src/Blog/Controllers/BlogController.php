@@ -85,8 +85,7 @@ class BlogController {
     public function show(Request $request) {
 
         $slug = $request->getAttribute('slug');
-        $post= $this->postRepository->findWithCategory($request->getAttribute('id'));
-
+        $post = $this->postRepository->findWithCategory($request->getAttribute('id'));
         if ($post->slug !== $slug) {
             return $this->redirect('blog.show', [
                 'slug' => $post->slug,

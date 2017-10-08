@@ -33,7 +33,7 @@ class CrudController {
     /**
      * @var Repository
      */
-    private $repository;
+    protected $repository;
 
     /**
      * @var FlashService
