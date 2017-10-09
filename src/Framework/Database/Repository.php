@@ -101,6 +101,13 @@ class Repository {
     }
 
     /**
+     * @return int
+     */
+    public function count(): int {
+        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->table}");
+    }
+
+    /**
      * @param $params
      * @return bool
      */
@@ -188,6 +195,20 @@ class Repository {
     }
 
     /**
+     * @param string $query
+     * @param array $params
+     * @return mixed
+     */
+    protected function fetchColumn(string $query, array $params = []) {
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($params);
+        if ($this->entity) {
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        }
+        return $statement->fetchColumn();
+    }
+
+    /**
      * @return string
      */
     protected function paginationQuery() {
@@ -203,5 +224,6 @@ class Repository {
             return "$field = :$field";
         }, array_keys($params)));
     }
+
 
 }
