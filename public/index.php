@@ -6,29 +6,27 @@
  * Time: 09:43
  */
 
-use DI\ContainerBuilder;
+use App\Admin\AdminModule;
+use App\Blog\BlogModule;
 use Framework\App;
+use Framework\Middleware\DispatcherMiddleware;
+use Framework\Middleware\MethodMiddleware;
+use Framework\Middleware\NotFoundMiddleware;
+use Framework\Middleware\RouterMiddleware;
+use Framework\Middleware\TrailingSlashMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
+use Middlewares\Whoops;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$modules = [
-    \App\Admin\AdminModule::class,
-    \App\Blog\BlogModule::class,
-];
-
-$builder = new ContainerBuilder();
-$builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
-
-foreach ($modules as $module) {
-    if ($module::DEFINITIONS) {
-        $builder->addDefinitions($module::DEFINITIONS);
-    }
-}
-
-$container = $builder->build();
-
-$app = new App($container, $modules);
+$app = (new App(dirname(__DIR__) . '/config/config.php'))
+    ->addModule(AdminModule::class)
+    ->addModule(BlogModule::class)
+    ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(MethodMiddleware::class)
+    ->pipe(RouterMiddleware::class)
+    ->pipe(DispatcherMiddleware::class)
+    ->pipe(NotFoundMiddleware::class);
 
 if (php_sapi_name() !== "cli") {
     $response = $app->run(ServerRequest::fromGlobals());
