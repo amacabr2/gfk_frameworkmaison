@@ -10,13 +10,13 @@ namespace Framework;
 
 
 use DI\ContainerBuilder;
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class App implements RequestHandlerInterface{
+class App implements DelegateInterface {
 
     /**
      * @var array
@@ -124,18 +124,6 @@ class App implements RequestHandlerInterface{
             return $middleware;
         }
         return null;
-    }
-
-
-    /**
-     * Handle the request and return a response.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public function handle(ServerRequestInterface $request) {
-        // TODO: Implement handle() method.
     }
 
 }
