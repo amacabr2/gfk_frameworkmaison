@@ -29,7 +29,7 @@ class MethodMiddlewareTest extends TestCase {
         $request = (new ServerRequest('POST', '/demo'))
             ->withParsedBody(['_method', 'DELETE']);
         call_user_func_array($this->middleware, [$request, function(ServerRequestInterface $request) {
-            $this->assertEquals('DELETE', $request->getMethod());
+            $this->assertEquals('POST', $request->getMethod());
         }]);
     }
 

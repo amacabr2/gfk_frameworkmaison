@@ -9,12 +9,14 @@
 use function DI\factory;
 use function DI\get;
 use function DI\object;
+use Framework\Middleware\CsrfMiddleware;
 use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
 use Framework\Session\PHPSession;
 use Framework\Session\SessionInterface;
+use Framework\Twig\CsrfTwigExtension;
 use Framework\Twig\FlashExtension;
 use Framework\Twig\FormExtension;
 use Framework\Twig\PagerFantaExtension;
@@ -35,9 +37,11 @@ return [
         get(TextExtension::class),
         get(TimeExtension::class),
         get(FlashExtension::class),
-        get(FormExtension::class)
+        get(FormExtension::class),
+        get(CsrfTwigExtension::class)
     ],
     SessionInterface::class => object(PHPSession::class),
+    CsrfMiddleware::class => object()->constructor(get(SessionInterface::class)),
     Router::class => object(),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function(ContainerInterface $c) {

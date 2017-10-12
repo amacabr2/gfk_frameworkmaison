@@ -100,7 +100,7 @@ class App implements DelegateInterface {
     /**
      * @return ContainerInterface
      */
-    private function getContainer(): ContainerInterface {
+    public function getContainer(): ContainerInterface {
         if ($this->container === null) {
             $builder = new ContainerBuilder();
             $builder->addDefinitions($this->definition);
