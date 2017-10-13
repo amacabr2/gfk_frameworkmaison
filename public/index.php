@@ -18,6 +18,8 @@ use Framework\Middleware\TrailingSlashMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Middlewares\Whoops;
 
+chdir(dirname(__DIR__));
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $app = (new App(dirname(__DIR__) . '/config/config.php'))

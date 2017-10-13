@@ -10,6 +10,8 @@ namespace Framework;
 
 
 use DI\ContainerBuilder;
+use Doctrine\Common\Cache\ApcuCache;
+use Doctrine\Common\Cache\FilesystemCache;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
@@ -103,6 +105,11 @@ class App implements DelegateInterface {
     public function getContainer(): ContainerInterface {
         if ($this->container === null) {
             $builder = new ContainerBuilder();
+            $env = getenv('ENV') ?: 'production';
+            if ($env == 'production') {
+                $builder->setDefinitionCache(new FilesystemCache('tmp/di'));
+                $builder->writeProxiesToFile(true, 'tmp/proxies');
+            }
             $builder->addDefinitions($this->definition);
             foreach ($this->modules as $module) {
                 if ($module::DEFINITIONS) {

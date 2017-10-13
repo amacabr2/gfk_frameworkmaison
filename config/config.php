@@ -6,6 +6,7 @@
  * Time: 17:56
  */
 
+use function DI\env;
 use function DI\factory;
 use function DI\get;
 use function DI\object;
@@ -25,6 +26,7 @@ use Framework\Twig\TimeExtension;
 use Psr\Container\ContainerInterface;
 
 return [
+    'env' => env('ENV', 'production'),
     'database.adapter' => 'mysql',
     'database.host' => 'localhost',
     'database.username' => 'amacabr2',
@@ -42,7 +44,7 @@ return [
     ],
     SessionInterface::class => object(PHPSession::class),
     CsrfMiddleware::class => object()->constructor(get(SessionInterface::class)),
-    Router::class => object(),
+    Router::class => factory(Router\RouterFactory::class),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function(ContainerInterface $c) {
         return new PDO(
