@@ -6,7 +6,7 @@
  * Time: 14:14
  */
 
-namespace Test\Framework\Middleware;
+namespace Tests\Framework\Middleware;
 
 
 use Framework\Exception\CsrfInvalidException;

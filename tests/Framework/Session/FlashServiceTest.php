@@ -6,7 +6,7 @@
  * Time: 15:02
  */
 
-namespace Test\Framework\Session;
+namespace Tests\Framework\Session;
 
 
 use Framework\Session\ArraySession;

@@ -133,4 +133,11 @@ class App implements DelegateInterface {
         return null;
     }
 
+    /**
+     * @return array
+     */
+    public function getModules(): array {
+        return $this->modules;
+    }
+
 }

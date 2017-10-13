@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 
-class DatabaseTestCase {
+class DatabaseTestCase extends TestCase {
 
     public function getPDO() {
         return new PDO('sqlite::memory:', null, null, [

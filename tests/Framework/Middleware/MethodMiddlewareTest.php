@@ -6,7 +6,7 @@
  * Time: 13:35
  */
 
-namespace Test\Framework\Middleware;
+namespace Tests\Framework\Middleware;
 
 
 use Framework\Middleware\MethodMiddleware;

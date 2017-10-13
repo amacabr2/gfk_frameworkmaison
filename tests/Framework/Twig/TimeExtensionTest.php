@@ -6,7 +6,7 @@
  * Time: 12:49
  */
 
-namespace Test\Framework\Twig;
+namespace Tests\Framework\Twig;
 
 
 use Framework\Twig\TimeExtension;

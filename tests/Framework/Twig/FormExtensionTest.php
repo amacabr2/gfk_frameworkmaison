@@ -6,7 +6,7 @@
  * Time: 14:07
  */
 
-namespace Test\Framework\Twig;
+namespace Tests\Framework\Twig;
 
 
 use Framework\Twig\FormExtension;
