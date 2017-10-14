@@ -26,6 +26,8 @@ class Query {
      */
     private $where = [];
 
+    private $entity;
+
     /**
      * @var \PDO
      */
@@ -91,6 +93,23 @@ class Query {
     public function params(array $params): self {
         $this->params = $params;
         return $this;
+    }
+
+    /**
+     * @param string $entity
+     * @return Query
+     */
+    public function into(string $entity): self {
+        $this->entity = $entity;
+        return $this;
+    }
+
+    /**
+     * @return QueryResult
+     */
+    public function all(): QueryResult {
+        return new QueryResult($this->execute()->fetchAll(\PDO::FETCH_ASSOC), $this->entity);
+
     }
 
     /**
