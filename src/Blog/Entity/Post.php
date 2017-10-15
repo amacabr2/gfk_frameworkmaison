@@ -25,6 +25,8 @@ class Post {
 
     public $categoryName;
 
+    public $image;
+
     /**
      * @param $datetime
      */
@@ -41,6 +43,10 @@ class Post {
         if (is_string($datetime)) {
             $this->updatedAt = new \DateTime($datetime);
         }
+    }
+
+    public function getThumb() {
+        return '/uploads/posts/' . $this->image;
     }
 
 }

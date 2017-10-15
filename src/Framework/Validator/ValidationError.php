@@ -35,7 +35,9 @@ class ValidationError {
         'maxLength' => "Le champ %s doit contenir moins de %d caractères",
         'datetime' => "Le champ %s doit contenir une date valide (%s)",
         'exists' => "Le champ %s n'éxiste pas dans la table %s",
-        'unique' => "Doit être unique"
+        'unique' => "Doit être unique",
+        'filetype' => "Le champs %s n'pas au format valide (%s)",
+        'uploaded' => "Vous devez uploader un fichier"
     ];
 
     /**

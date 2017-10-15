@@ -1,14 +1,32 @@
 {{ csrf_input() }}
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('name', item.name, "Titre de l'article") }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('category_id', item.category_id, "Categorie de l'article", {options: categories}) }}
     </div>
-    <div class="col-md-4">
+</div>
+<div class="row">
+    {% if item.image %}
+        <div class="col-md-4">
+            <img class="img-fluid img-thumbnail rounded-circle" src="{{ item.thumb }}" alt="">
+        </div>
+    {% endif %}
+    <div class="col-md-{{ item.image ? '4' : '6' }}">
+        {{ field('image', item.image, "Image de l'article", {type: 'file'}) }}
+    </div>
+    <div class="col-md-{{ item.image ? '4' : '6' }}">
         {{ field('slug', item.slug, "Lien de l'article") }}
     </div>
 </div>
-{{ field('content', item.content, "Contenu de l'article", {type: 'textarea'}) }}
-{{ field('created_at', item.created_at, "Date de création de l'article", {class: 'datepickr'}) }}
+<div class="row">
+    <div class="col-md-12">
+        {{ field('content', item.content, "Contenu de l'article", {type: 'textarea'}) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {{ field('created_at', item.created_at, "Date de création de l'article", {class: 'datepickr'}) }}
+    </div>
+</div>

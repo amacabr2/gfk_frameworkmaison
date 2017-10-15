@@ -105,14 +105,13 @@ class CrudController {
     public function create(Request $request) {
         $item = $this->getNewEntity();
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
-                $this->repository->insert($params);
+                $this->repository->insert($this->getParams($request, $item));
                 $this->flash->success($this->messages['create']);
                 return $this->redirect("$this->routePrefix.index");
             }
-            $item = $params;
+            $item = $request->getParsedBody();
             $errors = $validator->getErrors();
         }
         return $this->renderer->render("$this->viewPath/create", $this->formParams(compact('item', 'errors')));
@@ -125,14 +124,14 @@ class CrudController {
     public function edit(Request $request) {
         $item = $this->repository->find($request->getAttribute('id'));
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
-                $this->repository->update($item->id, $params);
+                $this->repository->update($item->id, $this->getParams($request, $item));
                 $this->flash->success($this->messages['edit']);
                 return $this->redirect("$this->routePrefix.index");
             }
             $errors = $validator->getErrors();
+            $params = $request->getParsedBody();
             $params['id'] = $item->id;
             $item = $params;
         }
@@ -153,7 +152,7 @@ class CrudController {
      * @param Request $request
      * @return array
      */
-    protected function getParams(Request $request): array {
+    protected function getParams(Request $request, $item): array {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, []);
         }, ARRAY_FILTER_USE_KEY);
@@ -164,7 +163,7 @@ class CrudController {
      * @return Validator
      */
     protected function getValidator(Request $request) {
-        return (new Validator($request->getParsedBody()));
+        return (new Validator(array_merge($request->getParsedBody(), $request->getUploadedFiles())));
     }
 
     /**

@@ -10,7 +10,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" method="post">
+            <form action="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" method="post" enctype="multipart/form-data">
                 {% include viewPath ~ '/form.html.twig' %}
                 <button class="btn btn-primary" type="submit">Éditer</button>
             </form>
