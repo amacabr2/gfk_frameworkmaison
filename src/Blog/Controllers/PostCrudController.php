@@ -111,5 +111,10 @@ class PostCrudController extends CrudController {
         return $params;
     }
 
+    public function delete(Request $request) {
+        $post = $this->repository->find($request->getAttribute('id'));
+        $this->postUpload->delete($post->image);
+        return parent::delete($request);
+    }
 
 }
