@@ -54,7 +54,7 @@ class RepositoryTest extends TestCase {
     }
 
     public function testFindAll() {
-        $categories = $this->repository->findAll();
+        $categories = $this->repository->findAll()->fetchAll();
         $this->assertCount(2, $categories);
         $this->assertInstanceOf(\stdClass::class, $categories[0]);
         $this->assertEquals("a1", $categories[0]->name);

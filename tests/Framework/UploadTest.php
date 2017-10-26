@@ -34,6 +34,10 @@ class UploadTest extends TestCase {
         $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)->getMock();
         $uploadedFile
             ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_OK);
+        $uploadedFile
+            ->expects($this->any())
             ->method('getClientFileName')
             ->willReturn('demo.jpg');
         $uploadedFile
@@ -47,6 +51,10 @@ class UploadTest extends TestCase {
         $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)->getMock();
         $uploadedFile
             ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_OK);
+        $uploadedFile
+            ->expects($this->any())
             ->method('getClientFileName')
             ->willReturn('demo.jpg');
         touch('tests/demo.jpg');
@@ -55,6 +63,23 @@ class UploadTest extends TestCase {
             ->method('moveTo')
             ->with($this->equalTo('tests/demo_copy.jpg'));
         $this->assertEquals('demo_copy.jpg', $this->upload->upload($uploadedFile));
+    }
+
+    public function testDontMoveIfFileUploaded() {
+        $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)->getMock();
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_CANT_WRITE);
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getClientFileName')
+            ->willReturn('demo.jpg');
+        $uploadedFile
+            ->expects($this->never())
+            ->method('moveTo')
+            ->with($this->equalTo('tests/demo.jpg'));
+        $this->assertNull($this->upload->upload($uploadedFile));
     }
 
 }

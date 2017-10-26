@@ -1,10 +1,13 @@
 {{ csrf_input() }}
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         {{ field('name', item.name, "Titre de l'article") }}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         {{ field('category_id', item.categoryId, "Categorie de l'article", {options: categories}) }}
+    </div>
+    <div class="col-md-4">
+        {{ field('published', item.published, "En ligne ?", {type: 'checkbox'}) }}
     </div>
 </div>
 <div class="row">

@@ -8,6 +8,7 @@
 
 namespace Framework\Actions;
 
+use Framework\Database\Hydrator;
 use Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -111,7 +112,7 @@ class CrudController {
                 $this->flash->success($this->messages['create']);
                 return $this->redirect("$this->routePrefix.index");
             }
-            $item = $request->getParsedBody();
+            Hydrator::hydrate($request->getParsedBody(), $item);
             $errors = $validator->getErrors();
         }
         return $this->renderer->render("$this->viewPath/create", $this->formParams(compact('item', 'errors')));
@@ -131,9 +132,7 @@ class CrudController {
                 return $this->redirect("$this->routePrefix.index");
             }
             $errors = $validator->getErrors();
-            $params = $request->getParsedBody();
-            $params['id'] = $item->id;
-            $item = $params;
+            Hydrator::hydrate($request->getParsedBody(), $item);
         }
         return $this->renderer->render("$this->viewPath/edit", $this->formParams(compact('item', 'errors')));
     }
