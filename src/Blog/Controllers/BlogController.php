@@ -72,7 +72,7 @@ class BlogController {
      */
     public function index(Request $request): string {
         $params = $request->getQueryParams();
-        $posts = $this->postRepository->findPaginatedPublic(12, $params['p'] ?? 1);
+        $posts = $this->postRepository->findPublic()->paginate(12, $params['p'] ?? 1);
         $categories = $this->categoryRepository->findAll();
         $page = $params['p'] ?? 1;
         return $this->renderer->render('@blog/index', compact('posts', 'categories', 'page'));

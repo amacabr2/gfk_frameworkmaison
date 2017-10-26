@@ -15,7 +15,7 @@ use PDO;
 class Repository {
 
     /**
-     * @var null|PDO
+     * @var PDO
      */
     protected $pdo;
 
@@ -33,7 +33,7 @@ class Repository {
      * Repository constructor.
      * @param PDO $pdo
      */
-    public function __construct(?PDO $pdo = null) {
+    public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
     }
 

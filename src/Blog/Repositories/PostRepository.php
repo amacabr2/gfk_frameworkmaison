@@ -11,6 +11,7 @@ namespace App\Blog\Repositories;
 
 use App\Blog\Entity\Post;
 use Framework\Database\PaginateQuery;
+use Framework\Database\Query;
 use Framework\Database\Repository;
 use Pagerfanta\Pagerfanta;
 
@@ -20,60 +21,11 @@ class PostRepository extends Repository {
 
     protected $table = 'posts';
 
-    /**
-     * @return string
-     */
-    protected function paginationQuery() {
-        return "SELECT p.id, p.name, c.name category_name
-                FROM {$this->table} AS p
-                LEFT JOIN categories AS c ON p.category_id = c.id
-                ORDER BY created_at DESC";
+    public function findPublic(): Query {
+        $category = new CategoryRepository($this->pdo);
+        return $this->makeQuery()
+            ->join($category->getTable() . ' as c', 'c.id = p.category_id')
+            ->select('p.*, c.name as category_name, c.slug as category_slug')
+            ->order('p.created_at DESC');
     }
-
-    /**
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Pagerfanta
-     */
-    public function findPaginatedPublic(int $perPage, int $currentPage): Pagerfanta {
-        $query = new PaginateQuery(
-            $this->pdo,
-            "SELECT p.*, c.name AS category_name, c.slug AS categoty_slug
-                    FROM posts AS p 
-                    LEFT JOIN categories AS c ON c.id = p.category_id 
-                    ORDER BY created_at DESC",
-            "SELECT COUNT(id) FROM {$this->table}",
-            $this->entity
-        );
-        return (new Pagerfanta($query))
-            ->setMaxPerPage($perPage)
-            ->setCurrentPage($currentPage);
-    }
-
-    public function findPaginatedPublicForCategory(int $perPage, int $currentPage, int $categoryId): Pagerfanta {
-        $query = new PaginateQuery(
-            $this->pdo,
-            "SELECT p.*, c.name AS category_name, c.slug AS category_slug
-                    FROM posts AS p 
-                    LEFT JOIN categories AS c ON c.id = p.category_id 
-                    WHERE p.category_id = :category
-                    ORDER BY created_at DESC",
-            "SELECT COUNT(id) FROM {$this->table} WHERE category_id = :category",
-            $this->entity,
-            ['category' => $categoryId]
-        );
-        return (new Pagerfanta($query))
-            ->setMaxPerPage($perPage)
-            ->setCurrentPage($currentPage);
-    }
-
-    public function findWithCategory(int $id) {
-        return $this->fetchOrFail("
-            SELECT p.*, c.name AS category_name, c.slug AS category_slug
-            FROM posts AS p 
-            LEFT JOIN categories AS c ON c.id = p.category_id
-            WHERE p.id = ?
-        ", [$id]);
-    }
-
 }
