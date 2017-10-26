@@ -74,7 +74,7 @@ class Query {
      */
     public function from(string $table, ?string $alias = null): self {
         if ($alias) {
-            $this->from[$alias] = $table;
+            $this->from[$table] = $alias;
         } else {
             $this->from[] = $table;
         }
@@ -134,7 +134,8 @@ class Query {
      */
     public function count(): int {
         $query = clone $this;
-        return $query->select("COUNT(id)")->execute()->fetchColumn();
+        $table = current($this->from);
+        return $query->select("COUNT($table.id)")->execute()->fetchColumn();
     }
 
     /**
@@ -239,7 +240,7 @@ class Query {
         $from = [];
         foreach ($this->from as $key => $value) {
             if (is_string($key)) {
-                $from[] = "$value as $key";
+                $from[] = "$key as $value";
             } else {
                 $from[] = $value;
             }

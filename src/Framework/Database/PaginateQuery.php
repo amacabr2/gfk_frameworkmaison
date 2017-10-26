@@ -43,7 +43,7 @@ class PaginateQuery implements AdapterInterface {
      *
      * @return array|\Traversable The slice.
      */
-    public function getSlice($offset, $length): array {
+    public function getSlice($offset, $length): QueryResult {
        $query = clone $this->query;
        return $query->limit($length, $offset)->fetchAll();
     }
