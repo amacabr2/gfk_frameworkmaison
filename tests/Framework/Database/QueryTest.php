@@ -30,7 +30,7 @@ class QueryTest extends DatabaseTestCase {
         $this->assertEquals("SELECT * FROM posts as p WHERE (a = :a OR b = :b) AND (c = :c)", (string)$query2);
     }
 
-    public function testFetchAll() {
+    public function testFetchfetchAll() {
         $pdo = $this->getPDO();
         $this->migrateDatabase($pdo);
         $this->seedDatabase($pdo);
@@ -52,7 +52,7 @@ class QueryTest extends DatabaseTestCase {
         $posts = (new Query($pdo))
             ->from('posts', 'p')
             ->into(Demo::class)
-            ->all();
+            ->fetchAll();
         $this->assertEquals('demo', substr($posts[0]->getSlug(), -4));
     }
 
@@ -63,7 +63,7 @@ class QueryTest extends DatabaseTestCase {
         $posts = (new Query($pdo))
             ->from('posts', 'p')
             ->into(Demo::class)
-            ->all();
+            ->fetchAll();
         $post1 = $posts[0];
         $post2 = $posts[0];
         $this->assertSame($post1, $post2);

@@ -22,7 +22,7 @@ class Upload {
     /**
      * @var array
      */
-    protected $formats;
+    protected $formats = [];
 
     /**
      * Upload constructor.

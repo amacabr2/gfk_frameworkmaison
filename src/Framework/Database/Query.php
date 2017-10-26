@@ -9,6 +9,9 @@
 namespace Framework\Database;
 
 
+use Pagerfanta\Pagerfanta;
+use PDO;
+
 class Query {
 
     /**
@@ -32,7 +35,7 @@ class Query {
     private $entity;
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     private $pdo;
 
@@ -58,9 +61,9 @@ class Query {
 
     /**
      * Query constructor.
-     * @param \PDO $pdo
+     * @param PDO $pdo
      */
-    public function __construct(?\PDO $pdo = null){
+    public function __construct(?PDO $pdo = null){
         $this->pdo = $pdo;
     }
 
@@ -130,8 +133,8 @@ class Query {
      * @return int
      */
     public function count(): int {
-        $this->select("COUNT(id)");
-        return $this->execute()->fetchColumn();
+        $query = clone $this;
+        return $query->select("COUNT(id)")->execute()->fetchColumn();
     }
 
     /**
@@ -153,11 +156,47 @@ class Query {
     }
 
     /**
+     * @return mixed
+     */
+    public function fetch() {
+        $record = $this->execute()->fetch(PDO::FETCH_ASSOC);
+        if ($record === false) {
+            return false;
+        }
+        if ($this->entity) {
+            return Hydrator::hydrate($record, $this->entity);
+        }
+        return $record;
+    }
+
+    /**
      * @return QueryResult
      */
-    public function all(): QueryResult {
-        return new QueryResult($this->execute()->fetchAll(\PDO::FETCH_ASSOC), $this->entity);
+    public function fetchAll(): QueryResult {
+        return new QueryResult($this->execute()->fetchAll(PDO::FETCH_ASSOC), $this->entity);
 
+    }
+
+    /**
+     * @return mixed
+     * @throws NoRecordException
+     */
+    public function fetchOrFail() {
+        $record = $this->fetch();
+        if ($record === false) {
+            throw new NoRecordException();
+        }
+        return $record;
+    }
+
+    /**
+     * @param int $perPage
+     * @param int $currentPage
+     * @return Pagerfanta
+     */
+    public function paginate(int $perPage, int $currentPage = 1): Pagerfanta {
+        $paginator = new PaginateQuery($this);
+        return (new Pagerfanta($paginator))->setMaxPerPage($perPage)->setCurrentPage($currentPage);
     }
 
     /**
@@ -220,5 +259,4 @@ class Query {
         }
         return $this->pdo->query($query);
     }
-
 }

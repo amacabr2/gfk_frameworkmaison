@@ -15,7 +15,7 @@ use PDO;
 class Repository {
 
     /**
-     * @var PDO
+     * @var null|PDO
      */
     protected $pdo;
 
@@ -27,37 +27,26 @@ class Repository {
     /**
      * @var string|null
      */
-    protected $entity;
+    protected $entity = \stdClass::class;
 
     /**
      * Repository constructor.
      * @param PDO $pdo
      */
-    public function __construct(PDO $pdo) {
+    public function __construct(?PDO $pdo = null) {
         $this->pdo = $pdo;
     }
 
-    /**
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Pagerfanta
-     */
-    public function findPaginated(int $perPage, int $currentPage): Pagerfanta {
-        $query = new PaginateQuery(
-            $this->pdo,
-            $this->paginationQuery(),
-            "SELECT COUNT(id) FROM {$this->table}",
-            $this->entity
-        );
-        return (new Pagerfanta($query))
-            ->setMaxPerPage($perPage)
-            ->setCurrentPage($currentPage);
+    protected function makeQuery(): Query {
+        return (new Query($this->pdo))
+            ->from($this->table, $this->table[0])
+            ->into($this->entity);
     }
 
     /**
      * @return array
      */
-    public function findList():array {
+    public function findList(): array {
         $list = [];
         $results = $this->pdo
             ->query("SELECT * FROM $this->table")
@@ -69,16 +58,10 @@ class Repository {
     }
 
     /**
-     * @return array
+     * @return QueryResult
      */
-    public function findAll(): array {
-        $statement = $this->pdo->query("SELECT * FROM $this->table");
-        if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        } else {
-            $statement->setFetchMode(PDO::FETCH_OBJ);
-        }
-        return $statement->fetchAll();
+    public function findAll(): QueryResult {
+        return $this->makeQuery()->fetchAll();
     }
 
     /**
@@ -88,7 +71,7 @@ class Repository {
      * @throws NoRecordException
      */
     public function findBy(string $field, string $value) {
-        return $this->fetchOrFail("SELECT * FROM $this->table WHERE $field = ?", [$value]);
+        return $this->makeQuery()->where("$field = :field")->params(["field" => $value])->fetchOrfail();
     }
 
     /**
@@ -97,14 +80,14 @@ class Repository {
      * @throws NoRecordException
      */
     public function find(int $id) {
-        return $this->fetchOrFail("SELECT * FROM {$this->table} WHERE id = :id", ['id' => $id]);
+        return $this->makeQuery()->where("id = $id")->fetchOrfail();
     }
 
     /**
      * @return int
      */
     public function count(): int {
-        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->table}");
+        return $this->makeQuery()->count();
     }
 
     /**
@@ -171,48 +154,6 @@ class Repository {
      */
     public function getPdo(): PDO {
         return $this->pdo;
-    }
-
-    /**
-     * @param string $query
-     * @param array $params
-     * @return mixed
-     * @throws NoRecordException
-     */
-    protected function fetchOrFail(string $query, array $params = []) {
-        $statement = $this->pdo->prepare($query);
-        $statement->execute($params);
-        if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        } else {
-            $statement->setFetchMode(PDO::FETCH_OBJ);
-        }
-        $record =  $statement->fetch();
-        if ($record === false) {
-            throw new NoRecordException();
-        }
-        return $record;
-    }
-
-    /**
-     * @param string $query
-     * @param array $params
-     * @return mixed
-     */
-    protected function fetchColumn(string $query, array $params = []) {
-        $statement = $this->pdo->prepare($query);
-        $statement->execute($params);
-        if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        }
-        return $statement->fetchColumn();
-    }
-
-    /**
-     * @return string
-     */
-    protected function paginationQuery() {
-        return "SELECT * FROM {$this->table}";
     }
 
     /**
