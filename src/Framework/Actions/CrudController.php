@@ -94,7 +94,7 @@ class CrudController {
      */
     public function index(Request $request): string {
         $params = $request->getQueryParams();
-        $items = $this->repository->findPaginated(12, $params['p'] ?? 1);
+        $items = $this->repository->findAll()->paginate(12, $params['p'] ?? 1);
         return $this->renderer->render("$this->viewPath/index", compact('items'));
     }
 

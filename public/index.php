@@ -22,6 +22,8 @@ chdir(dirname(__DIR__));
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+// 39.54
+
 $app = (new App(dirname(__DIR__) . '/config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)

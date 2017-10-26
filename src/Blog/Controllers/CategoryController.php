@@ -60,7 +60,7 @@ class CategoryController {
     public function index(Request $request): string {
         $params = $request->getQueryParams();
         $category = $this->categoryRepository->findBy('slug', $request->getAttribute('slug'));
-        $posts = $this->postRepository->findPaginatedPublicForCategory(12, $params['p'] ?? 1, $category->id);
+        $posts = $this->postRepository->findPublicForCategory($category->id)->paginate(12, $params['p'] ?? 1, $category->id);
         $categories = $this->categoryRepository->findAll();
         $page = $params['p'] ?? 1;
         return $this->renderer->render('@blog/index', compact('posts', 'categories', 'category', 'page'));

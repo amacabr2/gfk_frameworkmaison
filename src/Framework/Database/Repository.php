@@ -37,7 +37,7 @@ class Repository {
         $this->pdo = $pdo;
     }
 
-    protected function makeQuery(): Query {
+    public function makeQuery(): Query {
         return (new Query($this->pdo))
             ->from($this->table, $this->table[0])
             ->into($this->entity);
@@ -58,10 +58,10 @@ class Repository {
     }
 
     /**
-     * @return QueryResult
+     * @return Query
      */
-    public function findAll(): QueryResult {
-        return $this->makeQuery()->fetchAll();
+    public function findAll(): Query {
+        return $this->makeQuery();
     }
 
     /**

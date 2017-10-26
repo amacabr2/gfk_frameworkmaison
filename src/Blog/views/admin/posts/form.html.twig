@@ -4,7 +4,7 @@
         {{ field('name', item.name, "Titre de l'article") }}
     </div>
     <div class="col-md-6">
-        {{ field('category_id', item.category_id, "Categorie de l'article", {options: categories}) }}
+        {{ field('category_id', item.categoryId, "Categorie de l'article", {options: categories}) }}
     </div>
 </div>
 <div class="row">
@@ -27,6 +27,6 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        {{ field('created_at', item.created_at, "Date de création de l'article", {class: 'datepickr'}) }}
+        {{ field('created_at', item.createdAt, "Date de création de l'article", {class: 'datepickr'}) }}
     </div>
 </div>

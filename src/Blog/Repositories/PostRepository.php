@@ -21,11 +21,34 @@ class PostRepository extends Repository {
 
     protected $table = 'posts';
 
-    public function findPublic(): Query {
+    public function findAll(): Query {
         $category = new CategoryRepository($this->pdo);
         return $this->makeQuery()
             ->join($category->getTable() . ' as c', 'c.id = p.category_id')
             ->select('p.*, c.name as category_name, c.slug as category_slug')
             ->order('p.created_at DESC');
+    }
+
+    /**
+     * @return Query
+     */
+    public function findPublic(): Query {
+        return $this->findAll();
+    }
+
+    /**
+     * @param int $id
+     * @return Query
+     */
+    public function findPublicForCategory(int $id): Query {
+        return $this->findPublic()->where("p.category_id = $id");
+    }
+
+    /**
+     * @param int $id
+     * @return Post
+     */
+    public function findWithCategory(int $id): Post {
+        return $this->findPublic()->where("p.id = $id")->fetch();
     }
 }
