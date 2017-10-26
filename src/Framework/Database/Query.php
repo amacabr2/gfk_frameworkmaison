@@ -26,6 +26,9 @@ class Query {
      */
     private $where = [];
 
+    /**
+     * @var mixed
+     */
     private $entity;
 
     /**
@@ -36,7 +39,22 @@ class Query {
     /**
      * @var array
      */
-    private $params;
+    private $params = [];
+
+    /**
+     * @var array
+     */
+    private $order = [];
+
+    /**
+     * @var array
+     */
+    private $joins;
+
+    /**
+     * @var string
+     */
+    private $limit;
 
     /**
      * Query constructor.
@@ -70,6 +88,36 @@ class Query {
     }
 
     /**
+     * @param int $length
+     * @param int $offset
+     * @return Query
+     */
+    public function limit(int $length, int $offset = 0): self {
+        $this->limit = "$offset, $length";
+        return $this;
+    }
+
+    /**
+     * @param string $order
+     * @return Query
+     */
+    public function order(string  $order): self {
+        $this->order[] = $order;
+        return $this;
+    }
+
+    /**
+     * @param string $table
+     * @param string $condition
+     * @param string $type
+     * @return Query
+     */
+    public function join(string $table, string $condition, string $type = 'LEFT'): self {
+        $this->joins[$type][] = [$table, $condition];
+        return $this;
+    }
+
+    /**
      * @param \string[] ...$condition
      * @return Query
      */
@@ -91,7 +139,7 @@ class Query {
      * @return Query
      */
     public function params(array $params): self {
-        $this->params = $params;
+        $this->params = array_merge($this->params, $params);
         return $this;
     }
 
@@ -115,7 +163,7 @@ class Query {
     /**
      * @return string
      */
-    function __toString(): string {
+    public function __toString(): string {
         $parts = ['SELECT'];
         if ($this->select) {
             $parts[] = join(', ', $this->select);
@@ -124,13 +172,30 @@ class Query {
         }
         $parts[] = 'FROM';
         $parts[] = $this->buildFrom();
+        if (!empty($this->joins)) {
+            foreach ($this->joins as $type => $joins) {
+                foreach ($joins as [$table, $condition]) {
+                    $parts[] = strtoupper($type) . " JOIN $table ON $condition";
+                }
+            }
+        }
         if (!empty($this->where)) {
             $parts[] = 'WHERE';
             $parts[] = "(" . join(') AND (',  $this->where) . ')';
         }
+        if (!empty($this->order)) {
+            $parts[] = 'ORDER BY';
+            $parts[] = join(', ', $this->order);
+        }
+        if ($this->limit) {
+            $parts[] = 'LIMIT ' . $this->limit;
+        }
         return join(' ', $parts);
     }
 
+    /**
+     * @return string
+     */
     private function buildFrom(): string {
         $from = [];
         foreach ($this->from as $key => $value) {
@@ -148,7 +213,7 @@ class Query {
      */
     private function execute() {
         $query = $this->__toString();
-        if ($this->params) {
+        if (!empty($this->params)) {
             $statement = $this->pdo->prepare($query);
             $statement->execute($this->params);
             return $statement;

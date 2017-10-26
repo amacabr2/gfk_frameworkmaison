@@ -8,7 +8,6 @@
 
 namespace Tests\Framework\Database;
 
-
 use Framework\Database\Query;
 use Tests\DatabaseTestCase;
 
@@ -70,4 +69,23 @@ class QueryTest extends DatabaseTestCase {
         $this->assertSame($post1, $post2);
     }
 
+    public function testJoinQuery() {
+        $query = (new Query())
+            ->from('posts', 'p')
+            ->select('name')
+            ->join('categories as c', 'c.id = p.category_id')
+            ->join('categories as c2', 'c2.id = p.category_id', 'inner');
+        $this->assertEquals('SELECT name FROM posts as p LEFT JOIN categories as c ON c.id = p.category_id INNER JOIN categories as c2 ON c2.id = p.category_id', (string)$query);
+    }
+
+    public function testLimitOrder() {
+        $query = (new Query())
+            ->from('posts', 'p')
+            ->select('name')
+            ->order('id DESC')
+            ->order('name ASC')
+            ->limit(10, 5)
+            ->join('categories as c', 'c.id = p.category_id');
+        $this->assertEquals('SELECT name FROM posts as p LEFT JOIN categories as c ON c.id = p.category_id ORDER BY id DESC, name ASC LIMIT 5, 10', (string)$query);
+    }
 }
