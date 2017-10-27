@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: amacabr2
+ * UserInterface: amacabr2
  * Date: 13/09/17
  * Time: 09:59
  */
@@ -12,6 +12,7 @@ namespace Framework;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\Common\Cache\FilesystemCache;
+use Framework\Middleware\RouterPrefixedMiddleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
@@ -63,11 +64,16 @@ class App implements DelegateInterface {
     }
 
     /**
+     * @param string|null $routePrefix
      * @param string $middleware
      * @return App
      */
-    public function pipe(string $middleware): self {
-        $this->middlewares[] = $middleware;
+    public function pipe(string $middleware, ?string $routePrefix = null): self {
+        if ($routePrefix === null) {
+            $this->middlewares[] = $middleware;
+        } else {
+            $this->middlewares[] = new RouterPrefixedMiddleware($this->getContainer(), $routePrefix, $middleware);
+        }
         return $this;
     }
 
@@ -126,7 +132,11 @@ class App implements DelegateInterface {
      */
     private function getMiddleware() {
         if (array_key_exists($this->index, $this->middlewares)) {
-            $middleware =  $this->container->get($this->middlewares[$this->index]);
+            if (is_string($this->middlewares[$this->index])) {
+                $middleware =  $this->container->get($this->middlewares[$this->index]);
+            } else {
+                $middleware = $this->middlewares[$this->index];
+            }
             $this->index++;
             return $middleware;
         }

@@ -1,14 +1,16 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: amacabr2
+ * UserInterface: amacabr2
  * Date: 13/09/17
  * Time: 09:43
  */
 
 use App\Admin\AdminModule;
+use App\Auth\AuthModule;
 use App\Blog\BlogModule;
 use Framework\App;
+use Framework\Auth\LoggedInMiddleware;
 use Framework\Middleware\CsrfMiddleware;
 use Framework\Middleware\DispatcherMiddleware;
 use Framework\Middleware\MethodMiddleware;
@@ -22,13 +24,17 @@ chdir(dirname(__DIR__));
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-// 39.54
-
 $app = (new App(dirname(__DIR__) . '/config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)
+    ->addModule(AuthModule::class);
+
+$container = $app->getContainer();
+
+$app
     ->pipe(Whoops::class)
     ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(LoggedInMiddleware::class, $container->get('admin.prefix'))
     ->pipe(MethodMiddleware::class)
     ->pipe(CsrfMiddleware::class)
     ->pipe(RouterMiddleware::class)
