@@ -40,7 +40,7 @@ return [
         get(TimeExtension::class),
         get(FlashExtension::class),
         get(FormExtension::class),
-        get(CsrfTwigExtension::class)
+        get(CsrfTwigExtension::class),
     ],
     SessionInterface::class => object(PHPSession::class),
     CsrfMiddleware::class => object()->constructor(get(SessionInterface::class)),

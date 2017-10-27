@@ -1,0 +1,28 @@
+{% extends 'layout.html.twig' %}
+
+{% block style %}
+    <link rel="stylesheet" href="http://localhost:8000/css/login.css">
+{% endblock %}
+
+{% block body %}
+
+    <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
+                <img class="card-img-top" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="Card image cap">
+                <div class="card-block">
+                    <h4 class="card-title">Connecte-toi</h4>
+                    <p class="card-text">
+                        <form action="{{ path('auth.login') }}" method="post">
+                            {{ csrf_input() }}
+                            {{ field('username', null, "Nom d'utilisteur") }}
+                            {{ field('password', null, "Mot de passe") }}
+                            <button class="btn btn-primary">Se connecter</button>
+                        </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

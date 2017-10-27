@@ -9,6 +9,7 @@
 namespace Framework\Database;
 
 
+use App\Auth\Entity\User;
 use Pagerfanta\Pagerfanta;
 use PDO;
 

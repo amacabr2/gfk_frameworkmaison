@@ -10,5 +10,6 @@ use App\Auth\DatabaseAuth;
 use Framework\AuthInterface;
 
 return [
-  AuthInterface::class => \DI\get(DatabaseAuth::class)
+    'auth.login' => '/login',
+    AuthInterface::class => \DI\get(DatabaseAuth::class)
 ];
