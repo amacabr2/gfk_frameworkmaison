@@ -11,5 +11,6 @@ use Framework\AuthInterface;
 
 return [
     'auth.login' => '/login',
+    'auth.logout' => '/logout',
     AuthInterface::class => \DI\get(DatabaseAuth::class)
 ];

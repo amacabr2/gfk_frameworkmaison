@@ -84,4 +84,8 @@ class DatabaseAuth implements AuthInterface {
 
         return null;
     }
+
+    public function logout(): void {
+        $this->session->delete('auth.user');
+    }
 }

@@ -10,6 +10,7 @@ namespace App\Auth;
 
 
 use App\Auth\Controllers\LoginController;
+use App\Auth\Controllers\LogoutController;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -33,6 +34,7 @@ class AuthModule extends Module {
         $renderer->addPath('auth', __DIR__ . '/views');
         $router->get($container->get('auth.login'), LoginController::class, 'auth.login');
         $router->post($container->get('auth.login'), LoginController::class);
+        $router->post($container->get('auth.logout'), LogoutController::class, 'auth.logout');
     }
 
 

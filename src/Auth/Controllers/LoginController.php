@@ -81,6 +81,7 @@ class LoginController {
         $params = $request->getParsedBody();
         $user = $this->auth->login($params['username'], $params['password']);
         if ($user) {
+            $this->service->success('Bienvenue ' . $params['username']);
             return $this->redirect('admin');
         } else {
             $this->service->error('Identifiant ou mot de passe incorrecte');

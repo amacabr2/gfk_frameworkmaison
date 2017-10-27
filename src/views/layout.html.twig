@@ -39,11 +39,30 @@
             <input class="form-control mr-sm-2" type="text" placeholder="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="btn btn-primary" href="{{ path('auth.login') }}">Se connecter</a>
+            </li>
+        </ul>
     </div>
 </nav>
 
 <div class="container">
+
+    {% if flash('success') %}
+        <div class="alert alert-success">
+            {{ flash('success') }}
+        </div>
+    {% endif %}
+
+    {% if flash('error') %}
+        <div class="alert alert-danger">
+            {{ flash('error') }}
+        </div>
+    {% endif %}
+
     {% block body %}{% endblock %}
+
 </div>
 
 <!-- Bootstrap core JavaScript

@@ -39,6 +39,12 @@
             <input class="form-control mr-sm-2" type="text" placeholder="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <div class="navbar-nav">
+            <form class="nav-item" method="post" action="{{ path('auth.logout') }}">
+                {{ csrf_input() }}
+                <button class="btn btn-primary">Se déconnecter</button>
+            </form>
+        </div>
     </div>
 </nav>
 
