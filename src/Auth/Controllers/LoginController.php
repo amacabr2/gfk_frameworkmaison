@@ -12,8 +12,10 @@ namespace App\Auth\Controllers;
 use App\Auth\DatabaseAuth;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
+use Framework\Response\RedirectResponse;
 use Framework\Router;
 use Framework\Session\FlashService;
+use Framework\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -33,10 +35,11 @@ class LoginController {
      * @var Router
      */
     private $router;
+
     /**
-     * @var FlashService
+     * @var SessionInterface
      */
-    private $service;
+    private $session;
 
     use RouterAwareAction;
 
@@ -44,14 +47,14 @@ class LoginController {
      * LoginController constructor.
      * @param RendererInterface $renderer
      * @param DatabaseAuth $auth
-     * @param FlashService $service
      * @param Router $router
+     * @param SessionInterface $session
      */
-    public function __construct(RendererInterface $renderer, DatabaseAuth $auth, FlashService $service, Router $router) {
+    public function __construct(RendererInterface $renderer, DatabaseAuth $auth, Router $router, SessionInterface $session) {
         $this->renderer = $renderer;
         $this->auth = $auth;
         $this->router = $router;
-        $this->service = $service;
+        $this->session = $session;
     }
 
     /**
@@ -80,11 +83,14 @@ class LoginController {
     public function attempt(ServerRequestInterface $request): ResponseInterface {
         $params = $request->getParsedBody();
         $user = $this->auth->login($params['username'], $params['password']);
+
         if ($user) {
-            $this->service->success('Bienvenue ' . $params['username']);
-            return $this->redirect('admin');
+            (new FlashService($this->session))->success('Bienvenue ' . $params['username']);
+            $path = $this->session->get('auth.redirect') ?: $this->router->generateUri('admin');
+            $this->session->delete('auth.redirect');
+            return new RedirectResponse($path);
         } else {
-            $this->service->error('Identifiant ou mot de passe incorrecte');
+            (new FlashService($this->session))->error('Identifiant ou mot de passe incorrecte');
             return $this->redirect('auth.login');
         }
     }

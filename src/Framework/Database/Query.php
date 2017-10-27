@@ -176,7 +176,6 @@ class Query implements \IteratorAggregate {
      */
     public function fetchAll(): QueryResult {
         return new QueryResult($this->execute()->fetchAll(PDO::FETCH_ASSOC), $this->entity);
-
     }
 
     /**

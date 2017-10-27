@@ -54,7 +54,12 @@ class DatabaseAuth implements AuthInterface {
         }
 
         /** @var User $user */
-        $user = $this->userRepository->findBy('username', $username);
+        try {
+            $user = $this->userRepository->findBy('username', $username);
+        } catch (NoRecordException $exception) {
+            $user = null;
+        }
+
         if ($user && password_verify($password, $user->password)) {
             $this->session->set('auth.user', $user->id);
             return $user;

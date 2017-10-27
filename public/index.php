@@ -8,6 +8,7 @@
 
 use App\Admin\AdminModule;
 use App\Auth\AuthModule;
+use App\Auth\ForbiddenMiddleware;
 use App\Blog\BlogModule;
 use Framework\App;
 use Framework\Auth\LoggedInMiddleware;
@@ -34,6 +35,7 @@ $container = $app->getContainer();
 $app
     ->pipe(Whoops::class)
     ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(ForbiddenMiddleware::class)
     ->pipe(LoggedInMiddleware::class, $container->get('admin.prefix'))
     ->pipe(MethodMiddleware::class)
     ->pipe(CsrfMiddleware::class)

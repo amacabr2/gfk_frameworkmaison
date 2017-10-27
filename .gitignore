@@ -3,3 +3,4 @@
 composer.lock
 tmp
 public/uploads
+/src/Auth/ForbiddenMiddleware.php
